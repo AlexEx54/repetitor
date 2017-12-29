@@ -1,15 +1,20 @@
 package com.projects.asgrebennikov.repetitor;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -60,12 +65,59 @@ public class SentenceActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
-                listItems);
+                listItems) {
+
+                // Color.BLUE
+                // Color.RED
+                // Color.MAGENTA
+                // Color.GRAY
+                // Color.BLACK
+                // Color.GREEN
+
+                int[] colors = {
+                         Color.BLUE,
+                         Color.RED,
+                         Color.MAGENTA,
+                         Color.GRAY,
+                         Color.BLACK,
+                         Color.GREEN
+                };
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent){
+                    // Get the current item from ListView
+                    View view = super.getView(position,convertView,parent);
+
+                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                    textView.setTextColor(Color.WHITE);
+
+                    Random rand = new Random();
+                    int randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
+                    while ((randomIndex % 2) != (position % 2)) {
+                        randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
+                    }
+
+                    int randomColor = colors[randomIndex];
+
+                    view.setBackgroundColor(randomColor);
+
+                    return view;
+                }
+            };
+
+
         lv.setAdapter(adapter);
 
         listItems.add("Clicked 1");
         listItems.add("Clicked 2");
         listItems.add("Clicked 3");
+        listItems.add("Clicked 4");
+        listItems.add("Clicked 5");
+        listItems.add("Clicked 6");
+        listItems.add("Clicked 7");
+        listItems.add("Clicked 8");
+        listItems.add("Clicked 9");
+        listItems.add("Clicked 10");
 
         adapter.notifyDataSetChanged();
 
