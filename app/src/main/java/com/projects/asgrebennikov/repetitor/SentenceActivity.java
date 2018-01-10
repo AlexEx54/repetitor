@@ -75,12 +75,15 @@ public class SentenceActivity extends AppCompatActivity {
                 // Color.GREEN
 
                 int[] colors = {
-                         Color.BLUE,
-                         Color.RED,
-                         Color.MAGENTA,
-                         Color.GRAY,
-                         Color.BLACK,
-                         Color.GREEN
+                         Color.parseColor("#8CBF26"), // lime
+                         Color.parseColor("#A200FF"), // purple
+                         Color.parseColor("#FF0097"), // magenta
+                         Color.parseColor("#A05000"), // brown
+                         Color.parseColor("#E671B8"), // pink
+                         Color.parseColor("#F09609"), // orange
+//                         Color.parseColor("#1BA1E2"), // blue
+                         Color.parseColor("#E51400"), // red
+                         Color.parseColor("#339933"), // green
                 };
 
                 @Override
@@ -118,6 +121,10 @@ public class SentenceActivity extends AppCompatActivity {
         listItems.add("Clicked 8");
         listItems.add("Clicked 9");
         listItems.add("Clicked 10");
+        listItems.add("Clicked 11");
+        listItems.add("Clicked 12");
+        listItems.add("Clicked 13");
+        listItems.add("Clicked 14");
 
         adapter.notifyDataSetChanged();
 
