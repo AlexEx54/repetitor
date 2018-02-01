@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import backend.TextSupplierImpl;
+
 
 class MyRunnable implements Runnable {
 
@@ -106,8 +108,8 @@ public class SentenceActivity extends AppCompatActivity {
                 getResources().getIdentifier("russian_text",
                         "raw", getPackageName()));
 
-        Scanner s = new Scanner(ins).useDelimiter("\\A");
-        String result = s.hasNext() ? s.next() : "";
+//        Scanner s = new Scanner(ins).useDelimiter("\\A");
+//        String result = s.hasNext() ? s.next() : "";
 
 
         lv.setAdapter(adapter);
@@ -128,6 +130,15 @@ public class SentenceActivity extends AppCompatActivity {
         listItems.add("Clicked 14");
 
         adapter.notifyDataSetChanged();
+
+        String filesDir = getFilesDir().getAbsolutePath();
+
+        try {
+            TextSupplierImpl supplier = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
+            supplier.LoadCursor();
+        } catch (Exception e) {
+
+        }
 
         MyRunnable myRunnable = new MyRunnable();
         Thread t = new Thread(myRunnable);
