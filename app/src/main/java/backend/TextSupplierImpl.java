@@ -3,11 +3,12 @@ package backend;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
+
 
 /**
  * Created by as.grebennikov on 15.01.18.
@@ -19,26 +20,25 @@ public final class TextSupplierImpl implements TextSupplier {
                             InputStream fileStream,
                             String fileName) throws IOException {
         fileName_ = fileName;
-        fileStream_ = fileStream;
+        fileStream_ = new CountingInputStream(fileStream);
         filesDir_ = filesDir;
+        scanner_ = new Scanner(fileStream_).useDelimiter("(?<=[.?!;])\\s+(?=\\p{Lu})");
     }
 
     public Sentence GetNextSentence() {
-
-        fileStream_.
-
-        String sentenceStr = null;
+        String sentenceStr = scanner_.hasNext() ? scanner_.next() : "";
         return new SentenceImpl(sentenceStr);
     }
 
 
     public boolean SaveCursor() {
         BufferedWriter out = null;
+        cursor_ = fileStream_.getCount();
 
         try {
             FileWriter file = new FileWriter(filesDir_ + "/" + fileName_ + "__cursor", false);
             out = new BufferedWriter(file);
-            out.write(Integer.toString(cursor_));
+            out.write(Long.toString(cursor_));
             out.close();
         } catch (Exception e) {
             return false;
@@ -69,10 +69,11 @@ public final class TextSupplierImpl implements TextSupplier {
     }
 
 
-    private int cursor_ = -1; // offset in bytes
+    private long cursor_ = -1; // offset in bytes
     private String fileName_;
-    private InputStream fileStream_;
+    private CountingInputStream fileStream_;
     private String filesDir_;
+    private Scanner scanner_;
 
     private final String[] sentenceDelimiters_ = {".", "...", ";"};
 }

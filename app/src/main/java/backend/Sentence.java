@@ -9,4 +9,5 @@ import java.util.Vector;
 public interface Sentence {
 
     public Vector<String> GetWords();
+    public String AsString();
 }

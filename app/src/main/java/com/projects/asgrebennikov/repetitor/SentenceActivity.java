@@ -135,7 +135,9 @@ public class SentenceActivity extends AppCompatActivity {
 
         try {
             TextSupplierImpl supplier = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
-            supplier.LoadCursor();
+//            supplier.LoadCursor();
+            TextView textView = (TextView) findViewById(R.id.textView3);
+            textView.setText(supplier.GetNextSentence().AsString());
         } catch (Exception e) {
 
         }
