@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,7 +18,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Vector;
 
+import backend.Sentence;
+import backend.TextSupplier;
 import backend.TextSupplierImpl;
 
 
@@ -108,42 +112,38 @@ public class SentenceActivity extends AppCompatActivity {
                 getResources().getIdentifier("russian_text",
                         "raw", getPackageName()));
 
-//        Scanner s = new Scanner(ins).useDelimiter("\\A");
-//        String result = s.hasNext() ? s.next() : "";
-
-
         lv.setAdapter(adapter);
 
-        listItems.add("Clicked 1");
-        listItems.add("Clicked 2");
-        listItems.add("Clicked 3");
-        listItems.add("Clicked 4");
-        listItems.add("Clicked 5");
-        listItems.add("Clicked 6");
-        listItems.add("Clicked 7");
-        listItems.add("Clicked 8");
-        listItems.add("Clicked 9");
-        listItems.add("Clicked 10");
-        listItems.add("Clicked 11");
-        listItems.add("Clicked 12");
-        listItems.add("Clicked 13");
-        listItems.add("Clicked 14");
-
-        adapter.notifyDataSetChanged();
-
-        String filesDir = getFilesDir().getAbsolutePath();
-
         try {
-            TextSupplierImpl supplier = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
-//            supplier.LoadCursor();
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
+//            rusTextSupplier_.SaveCursor();
+            rusTextSupplier_.LoadCursor();
             TextView textView = (TextView) findViewById(R.id.textView3);
-            textView.setText(supplier.GetNextSentence().AsString());
+            Sentence sentence = rusTextSupplier_.GetNextSentence();
+            textView.setText(sentence.AsString());
+            Vector<String> words = sentence.GetWords();
+            listItems.addAll(words);
         } catch (Exception e) {
-
+            finish();
         }
+
+
+
+        Button nextSentenceButton = (Button) findViewById(R.id.button);
+        nextSentenceButton.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                rusTextSupplier_.SaveCursor();
+                TextView textView = (TextView) findViewById(R.id.textView3);
+                textView.setText(rusTextSupplier_.GetNextSentence().AsString());
+            }
+        });
 
         MyRunnable myRunnable = new MyRunnable();
         Thread t = new Thread(myRunnable);
         t.start();
     }
+
+    private TextSupplier rusTextSupplier_;
 }

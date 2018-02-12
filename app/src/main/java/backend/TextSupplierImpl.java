@@ -21,19 +21,22 @@ public final class TextSupplierImpl implements TextSupplier {
                             String fileName) throws IOException {
         fileName_ = fileName;
         fileStream_ = new CountingInputStream(fileStream);
+        fileStream_.mark(2048);
         filesDir_ = filesDir;
         scanner_ = new Scanner(fileStream_).useDelimiter("(?<=[.?!;])\\s+(?=\\p{Lu})");
+
     }
 
     public Sentence GetNextSentence() {
         String sentenceStr = scanner_.hasNext() ? scanner_.next() : "";
+        cursor_ += sentenceStr.getBytes().length + 1 /*(+whitespace = 1 byte)*/;
+        sentenceStr = sentenceStr.replaceAll("(\\r|\\n)", " ");
         return new SentenceImpl(sentenceStr);
     }
 
 
     public boolean SaveCursor() {
         BufferedWriter out = null;
-        cursor_ = fileStream_.getCount();
 
         try {
             FileWriter file = new FileWriter(filesDir_ + "/" + fileName_ + "__cursor", false);
@@ -49,10 +52,6 @@ public final class TextSupplierImpl implements TextSupplier {
 
 
     public boolean LoadCursor() {
-        if (cursor_ != -1) {
-            return false; // loaded already
-        }
-
         try {
             File file = new File(filesDir_ + "/" + fileName_ + "__cursor");
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -69,7 +68,7 @@ public final class TextSupplierImpl implements TextSupplier {
     }
 
 
-    private long cursor_ = -1; // offset in bytes
+    private long cursor_ = 0; // offset in bytes
     private String fileName_;
     private CountingInputStream fileStream_;
     private String filesDir_;

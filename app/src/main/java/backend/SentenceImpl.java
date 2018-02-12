@@ -1,5 +1,7 @@
 package backend;
 
+import java.util.Arrays;
+import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -14,7 +16,8 @@ public final class SentenceImpl implements Sentence {
 
 
     public Vector<String> GetWords() {
-        return new Vector<String>();
+        String[] words = sentence_.replaceAll("[^\\p{L} ]", "").split("\\s+");
+        return new Vector<String>(Arrays.asList(words));
     }
 
 
