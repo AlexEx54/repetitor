@@ -17,7 +17,7 @@
         app:layout_constraintGuide_percent="0.2" />
 
     <ListView
-        android:id="@+id/listView2"
+        android:id="@+id/wordsListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/sentenceTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -45,14 +45,14 @@
         android:text="rdtgdgsdgfsdfg"
         android:textColor="@android:color/white"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/listView2"
+        app:layout_constraintBottom_toTopOf="@+id/wordsListView"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/nextButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -60,9 +60,9 @@
         android:layout_marginTop="8dp"
         android:elevation="0dp"
         android:text=">"
-        app:layout_constraintBottom_toTopOf="@+id/listView2"
+        app:layout_constraintBottom_toTopOf="@+id/wordsListView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toEndOf="@+id/sentenceTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline

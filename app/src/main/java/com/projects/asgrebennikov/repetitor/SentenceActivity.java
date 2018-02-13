@@ -61,6 +61,9 @@ class MyRunnable implements Runnable {
 
 public class SentenceActivity extends AppCompatActivity {
 
+    private TextSupplier rusTextSupplier_;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +71,7 @@ public class SentenceActivity extends AppCompatActivity {
 
         ArrayList<String> listItems = new ArrayList<String>();
 
-        ListView lv = (ListView) findViewById(R.id.listView2);
+        ListView lv = (ListView) findViewById(R.id.wordsListView);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
@@ -118,7 +121,7 @@ public class SentenceActivity extends AppCompatActivity {
             rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
 //            rusTextSupplier_.SaveCursor();
             rusTextSupplier_.LoadCursor();
-            TextView textView = (TextView) findViewById(R.id.textView3);
+            TextView textView = (TextView) findViewById(R.id.sentenceTextView);
             Sentence sentence = rusTextSupplier_.GetNextSentence();
             textView.setText(sentence.AsString());
             Vector<String> words = sentence.GetWords();
@@ -129,13 +132,13 @@ public class SentenceActivity extends AppCompatActivity {
 
 
 
-        Button nextSentenceButton = (Button) findViewById(R.id.button);
+        Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 rusTextSupplier_.SaveCursor();
-                TextView textView = (TextView) findViewById(R.id.textView3);
+                TextView textView = (TextView) findViewById(R.id.sentenceTextView);
                 textView.setText(rusTextSupplier_.GetNextSentence().AsString());
             }
         });
@@ -145,5 +148,4 @@ public class SentenceActivity extends AppCompatActivity {
         t.start();
     }
 
-    private TextSupplier rusTextSupplier_;
-}
+} // class SentenceActivity
