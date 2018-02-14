@@ -62,6 +62,7 @@ class MyRunnable implements Runnable {
 public class SentenceActivity extends AppCompatActivity {
 
     private TextSupplier rusTextSupplier_;
+    private ArrayList<String> wordsList_;
 
 
     @Override
@@ -69,13 +70,13 @@ public class SentenceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sentence);
 
-        ArrayList<String> listItems = new ArrayList<String>();
+        wordsList_ = new ArrayList<String>();
 
         ListView lv = (ListView) findViewById(R.id.wordsListView);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
-                listItems) {
+                wordsList_) {
 
                 int[] colors = {
                          Color.parseColor("#8CBF26"), // lime
@@ -117,15 +118,16 @@ public class SentenceActivity extends AppCompatActivity {
 
         lv.setAdapter(adapter);
 
+
         try {
             rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
-//            rusTextSupplier_.SaveCursor();
+            rusTextSupplier_.SaveCursor();
             rusTextSupplier_.LoadCursor();
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
             Sentence sentence = rusTextSupplier_.GetNextSentence();
             textView.setText(sentence.AsString());
             Vector<String> words = sentence.GetWords();
-            listItems.addAll(words);
+            wordsList_.addAll(words);
         } catch (Exception e) {
             finish();
         }
@@ -139,7 +141,14 @@ public class SentenceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 rusTextSupplier_.SaveCursor();
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-                textView.setText(rusTextSupplier_.GetNextSentence().AsString());
+                Sentence sentence = rusTextSupplier_.GetNextSentence();
+                textView.setText(sentence.AsString());
+                Vector<String> words = sentence.GetWords();
+                ListView lv = (ListView) findViewById(R.id.wordsListView);
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) lv.getAdapter();
+                wordsList_.clear();
+                wordsList_.addAll(words);
+                adapter.notifyDataSetChanged();
             }
         });
 

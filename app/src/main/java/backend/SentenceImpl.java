@@ -10,6 +10,32 @@ import java.util.Vector;
 
 public final class SentenceImpl implements Sentence {
 
+    private final String sentence_;
+    private static Vector<String> russianPreps_ = new Vector<String>(Arrays.asList(
+                                                                                    "в",
+                                                                                    "без",
+                                                                                    "до",
+                                                                                    "из",
+                                                                                    "к",
+                                                                                    "на",
+                                                                                    "по",
+                                                                                    "о",
+                                                                                    "от",
+                                                                                    "перед",
+                                                                                    "при",
+                                                                                    "через",
+                                                                                    "с",
+                                                                                    "у",
+                                                                                    "и",
+                                                                                    "нет",
+                                                                                    "за",
+                                                                                    "над",
+                                                                                    "для",
+                                                                                    "об",
+                                                                                    "под",
+                                                                                    "про"
+                                        ));
+
     public SentenceImpl(String sentence) {
         sentence_ = sentence;
     }
@@ -17,7 +43,9 @@ public final class SentenceImpl implements Sentence {
 
     public Vector<String> GetWords() {
         String[] words = sentence_.replaceAll("[^\\p{L} ]", "").split("\\s+");
-        return new Vector<String>(Arrays.asList(words));
+        Vector<String> wordsAsList = new Vector<String>(Arrays.asList(words));
+
+        return RemoveRussianPreps(wordsAsList);
     }
 
 
@@ -25,5 +53,9 @@ public final class SentenceImpl implements Sentence {
         return sentence_;
     }
 
-    private final String sentence_;
+
+    private Vector<String> RemoveRussianPreps( Vector<String> source ) {
+        source.removeAll(russianPreps_);
+        return source;
+    }
 }
