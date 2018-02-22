@@ -61,63 +61,22 @@ class MyRunnable implements Runnable {
 
 public class SentenceActivity extends AppCompatActivity {
 
-    private TextSupplier rusTextSupplier_;
-    private ArrayList<String> wordsList_;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_sentence);
 
         wordsList_ = new ArrayList<String>();
-
         ListView lv = (ListView) findViewById(R.id.wordsListView);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                wordsList_) {
-
-                int[] colors = {
-                         Color.parseColor("#8CBF26"), // lime
-                         Color.parseColor("#A200FF"), // purple
-                         Color.parseColor("#FF0097"), // magenta
-                         Color.parseColor("#A05000"), // brown
-                         Color.parseColor("#E671B8"), // pink
-                         Color.parseColor("#F09609"), // orange
-                         Color.parseColor("#E51400"), // red
-                         Color.parseColor("#339933"), // green
-                };
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent){
-                    // Get the current item from ListView
-                    View view = super.getView(position,convertView,parent);
-
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(Color.WHITE);
-                    textView.setGravity(Gravity.CENTER);
-
-                    Random rand = new Random();
-                    int randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
-                    while ((randomIndex % 2) != (position % 2)) {
-                        randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
-                    }
-
-                    int randomColor = colors[randomIndex];
-
-                    view.setBackgroundColor(randomColor);
-
-                    return view;
-                }
-            };
+        ArrayAdapter<String> adapter = new WordsArrayAdapter<String>(this,
+                                                                      android.R.layout.simple_list_item_1,
+                                                                      wordsList_);
+        lv.setAdapter(adapter);
 
         InputStream ins = getResources().openRawResource(
                 getResources().getIdentifier("russian_text",
                         "raw", getPackageName()));
-
-        lv.setAdapter(adapter);
-
 
         try {
             rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
@@ -157,5 +116,8 @@ public class SentenceActivity extends AppCompatActivity {
         Thread t = new Thread(myRunnable);
         t.start();
     }
+
+    private TextSupplier rusTextSupplier_;
+    private ArrayList<String> wordsList_;
 
 } // class SentenceActivity
