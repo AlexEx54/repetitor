@@ -103,7 +103,6 @@ public class SentenceActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) lv.getAdapter();
                 wordsList_.clear();
                 wordsList_.addAll(words);
-                wordsList_.add("some \n --------------- \n and \n more \n strings");
                 adapter.notifyDataSetChanged();
             }
         });
