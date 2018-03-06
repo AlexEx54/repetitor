@@ -19,6 +19,7 @@ import java.util.Vector;
 import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
+import backend.Word;
 
 
 class MyRunnable implements Runnable {
@@ -63,9 +64,9 @@ public class SentenceActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_sentence);
 
-        wordsList_ = new ArrayList<String>();
+        wordsList_ = new ArrayList<WordListItem>();
         ListView lv = (ListView) findViewById(R.id.wordsListView);
-        ArrayAdapter<String> adapter = new WordsArrayAdapter<String>(this,
+        ArrayAdapter<WordListItem> adapter = new WordsArrayAdapter<WordListItem>(this,
                                                                       android.R.layout.simple_list_item_1,
                                                                       wordsList_);
         lv.setAdapter(adapter);
@@ -81,8 +82,8 @@ public class SentenceActivity extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
             Sentence sentence = rusTextSupplier_.GetNextSentence();
             textView.setText(sentence.AsString());
-            Vector<String> words = sentence.GetWords();
-            wordsList_.addAll(words);
+            Vector<Word> words = sentence.GetWords();
+            wordsList_.addAll(ToWordListItems(words));
         } catch (Exception e) {
             finish();
         }
@@ -98,11 +99,11 @@ public class SentenceActivity extends AppCompatActivity {
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
                 Sentence sentence = rusTextSupplier_.GetNextSentence();
                 textView.setText(sentence.AsString());
-                Vector<String> words = sentence.GetWords();
+                Vector<Word> words = sentence.GetWords();
                 ListView lv = (ListView) findViewById(R.id.wordsListView);
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) lv.getAdapter();
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
-                wordsList_.addAll(words);
+                wordsList_.addAll(ToWordListItems(words));
                 adapter.notifyDataSetChanged();
             }
         });
@@ -112,7 +113,17 @@ public class SentenceActivity extends AppCompatActivity {
         t.start();
     }
 
+    private Vector<WordListItem> ToWordListItems(Vector<Word> words) {
+        Vector<WordListItem> result = new Vector<WordListItem>();
+
+        for (Word word: words) {
+            result.add(new WordListItem(word));
+        }
+
+        return result;
+    }
+
     private TextSupplier rusTextSupplier_;
-    private ArrayList<String> wordsList_;
+    private ArrayList<WordListItem> wordsList_;
 
 } // class SentenceActivity

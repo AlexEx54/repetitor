@@ -26,6 +26,11 @@ public class Word {
         return type_;
     }
 
+    @Override
+    public String toString() {
+        return text_;
+    }
+
 
     private String text_;
     private WordType type_;
