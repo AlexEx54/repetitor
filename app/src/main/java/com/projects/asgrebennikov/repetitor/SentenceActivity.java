@@ -3,6 +3,7 @@ package com.projects.asgrebennikov.repetitor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,6 +21,9 @@ import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
 import backend.Word;
+import backend.YandexVocabularyImpl;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 
 class MyRunnable implements Runnable {
@@ -71,6 +75,21 @@ public class SentenceActivity extends AppCompatActivity {
                                                                       wordsList_);
         lv.setAdapter(adapter);
 
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Flowable.fromCallable(() -> {
+                    WordListItem item = (WordListItem) parent.getItemAtPosition(position);
+                    YandexVocabularyImpl vocabulary;
+                    return new Vector<Word>();
+                })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.single())
+                        .subscribe(System.out::println, Throwable::printStackTrace);
+            }
+        });
+
         InputStream ins = getResources().openRawResource(
                 getResources().getIdentifier("russian_text",
                         "raw", getPackageName()));
@@ -87,8 +106,6 @@ public class SentenceActivity extends AppCompatActivity {
         } catch (Exception e) {
             finish();
         }
-
-
 
         Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
@@ -113,6 +130,7 @@ public class SentenceActivity extends AppCompatActivity {
         t.start();
     }
 
+
     private Vector<WordListItem> ToWordListItems(Vector<Word> words) {
         Vector<WordListItem> result = new Vector<WordListItem>();
 
@@ -122,6 +140,7 @@ public class SentenceActivity extends AppCompatActivity {
 
         return result;
     }
+
 
     private TextSupplier rusTextSupplier_;
     private ArrayList<WordListItem> wordsList_;
