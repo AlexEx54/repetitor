@@ -20,6 +20,7 @@ import java.util.Vector;
 import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
+import backend.Vocabulary;
 import backend.Word;
 import backend.YandexVocabularyImpl;
 import io.reactivex.Flowable;
@@ -81,7 +82,8 @@ public class SentenceActivity extends AppCompatActivity {
                                     long id) {
                 Flowable.fromCallable(() -> {
                     WordListItem item = (WordListItem) parent.getItemAtPosition(position);
-                    YandexVocabularyImpl vocabulary;
+                    YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
+                    Vector<Word> translations = vocabulary.Translate(item.getWord(), Vocabulary.TranslateDirection.RU_EN);
                     return new Vector<Word>();
                 })
                         .subscribeOn(Schedulers.io())

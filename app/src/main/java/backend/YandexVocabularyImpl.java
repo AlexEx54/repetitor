@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.Vector;
@@ -20,10 +19,7 @@ public class YandexVocabularyImpl implements Vocabulary {
 
         try {
             InputStream stream = GetWordArticleXmlStream(word, direction);
-
-            Scanner s = new Scanner(stream).useDelimiter("\\A");
-            String string = s.hasNext() ? s.next() : "";
-            string = "";
+            TranslationResult translationResult = ParseWordArticleXml(stream);
         } catch (IOException e) {
             return new Vector<Word>();
         }
@@ -36,7 +32,7 @@ public class YandexVocabularyImpl implements Vocabulary {
         String translateDirectionRequestPart = (direction == TranslateDirection.AUTO) ? ""
                 : "lang=" + ToString(direction) + "&";
 
-        URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?" +
+        URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice/lookup?" +
                 "key=" + yandexKey + "&" +
                 translateDirectionRequestPart +
                 "flags=4" + "&" +
@@ -45,6 +41,10 @@ public class YandexVocabularyImpl implements Vocabulary {
         InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
 
         return stream;
+    }
+
+    private TranslationResult ParseWordArticleXml(InputStream stream) {
+        return null;
     }
 
 
@@ -60,4 +60,18 @@ public class YandexVocabularyImpl implements Vocabulary {
     }
 
     private static String yandexKey = "dict.1.1.20171219T092115Z.b4d251fe6793335a.ce9863aa4d1660707da362b3a1e2122fa7db659c";
+}
+
+class TranslationResult {
+    public Vector<TranslateArticle> articles;
+}
+
+class TranslateArticle {
+    String wordType;
+    Vector<Translation> translations;
+}
+
+class Translation {
+    String text;
+    Vector<String> synonyms;
 }

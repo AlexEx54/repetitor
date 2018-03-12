@@ -21,6 +21,11 @@ public class WordListItem {
     }
 
 
+    public Word getWord() {
+        return word_;
+    }
+
+
     public Vector<Word> getTranslations() {
         return translations_;
     }
