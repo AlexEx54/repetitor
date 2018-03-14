@@ -1,5 +1,10 @@
 package backend;
 
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +25,7 @@ public class YandexVocabularyImpl implements Vocabulary {
         try {
             InputStream stream = GetWordArticleXmlStream(word, direction);
             TranslationResult translationResult = ParseWordArticleXml(stream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return new Vector<Word>();
         }
 
@@ -43,8 +48,29 @@ public class YandexVocabularyImpl implements Vocabulary {
         return stream;
     }
 
-    private TranslationResult ParseWordArticleXml(InputStream stream) {
-        return null;
+
+    private TranslationResult ParseWordArticleXml(InputStream stream) throws XmlPullParserException, IOException {
+        XmlPullParser parser = Xml.newPullParser();
+        parser.setInput(stream, null);
+        parser.next();
+
+        TranslationResult result = new TranslationResult();
+
+        parser.require(XmlPullParser.START_TAG, null, "DicResult");
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("def")) {
+                result.articles.add(ParseDef(parser));
+            } else {
+                skip(parser);
+            }
+        }
+
+        return result;
     }
 
 
@@ -57,6 +83,12 @@ public class YandexVocabularyImpl implements Vocabulary {
         }
 
         return  "";
+    }
+
+
+    private TranslationResult ParseDicResult(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, null, "head");
+
     }
 
     private static String yandexKey = "dict.1.1.20171219T092115Z.b4d251fe6793335a.ce9863aa4d1660707da362b3a1e2122fa7db659c";
