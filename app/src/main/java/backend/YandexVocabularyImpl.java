@@ -139,6 +139,31 @@ public class YandexVocabularyImpl implements Vocabulary {
     }
 
 
+    private String ParseSyn(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, null, "syn");
+
+        String result = null;
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            if (parser.getName().equals("text")) {
+                result = parser.getText();
+            } else {
+                skip(parser);
+            }
+        }
+
+        if (result == null) {
+            throw new XmlPullParserException("There's no 'text' tag inside 'syn'!!");
+        }
+
+        return result;
+    }
+
+
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
