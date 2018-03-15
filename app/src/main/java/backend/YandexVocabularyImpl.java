@@ -24,7 +24,7 @@ public class YandexVocabularyImpl implements Vocabulary {
 
         try {
             InputStream stream = GetWordArticleXmlStream(word, direction);
-            TranslationResult translationResult = ParseWordArticleXml(stream);
+            TranslationResult translationResult = ParseWordArticleXml(stream, word);
         } catch (Exception e) {
             return new Vector<Word>();
         }
@@ -49,12 +49,14 @@ public class YandexVocabularyImpl implements Vocabulary {
     }
 
 
-    private TranslationResult ParseWordArticleXml(InputStream stream) throws XmlPullParserException, IOException {
+    private TranslationResult ParseWordArticleXml(InputStream stream, Word word) throws XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
         parser.setInput(stream, null);
         parser.next();
 
         TranslationResult result = new TranslationResult();
+        result.articles = new Vector<TranslateArticle>();
+        result.request = word;
 
         parser.require(XmlPullParser.START_TAG, null, "DicResult");
 
@@ -86,24 +88,89 @@ public class YandexVocabularyImpl implements Vocabulary {
     }
 
 
-    private TranslationResult ParseDicResult(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, null, "head");
+    private TranslateArticle ParseDef(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, null, "def");
 
+        TranslateArticle result = new TranslateArticle();
+        result.translations = new Vector<Translation>();
+        result.wordType = parser.getAttributeValue(null, "pos");
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String tag_name = parser.getName();
+            if (tag_name.equals("tr")) {
+                result.translations.add(ParseTr(parser));
+            } else {
+                skip(parser);
+            }
+        }
+
+        return result;
     }
+
+
+    private Translation ParseTr(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, null, "tr");
+
+        Translation result = new Translation();
+        result.synonyms = new Vector<String>();
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String tag_name = parser.getName();
+
+            if (tag_name.equals("text")) {
+                result.text = parser.getText();
+                skip(parser);
+            }
+
+            if (tag_name.equals("syn")) {
+                result.synonyms.add(ParseSyn(parser));
+            } else {
+                skip(parser);
+            }
+        }
+
+        return result;
+    }
+
+
+    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+        if (parser.getEventType() != XmlPullParser.START_TAG) {
+            throw new IllegalStateException();
+        }
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    break;
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    break;
+            }
+        }
+    }
+
 
     private static String yandexKey = "dict.1.1.20171219T092115Z.b4d251fe6793335a.ce9863aa4d1660707da362b3a1e2122fa7db659c";
 }
 
 class TranslationResult {
+    public Word request;
     public Vector<TranslateArticle> articles;
 }
 
 class TranslateArticle {
-    String wordType;
-    Vector<Translation> translations;
+    public String wordType;
+    public Vector<Translation> translations;
 }
 
 class Translation {
-    String text;
-    Vector<String> synonyms;
+    public String text;
+    public Vector<String> synonyms;
 }
