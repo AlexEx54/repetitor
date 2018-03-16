@@ -20,10 +20,10 @@ import java.util.Vector;
 public class YandexVocabularyImpl implements Vocabulary {
 
     public Vector<Word> Translate(Word word, TranslateDirection direction) {
-        Vector<Word> result = new Vector<Word>();
+        Vector<Word> result = null;
 
         try {
-            InputStream stream = GetWordArticleXmlStream(word, direction);
+            InputStream stream = GetWordArticleXmlStream(new Word("время"), direction);
             TranslationResult translationResult = ParseWordArticleXml(stream, word);
         } catch (Exception e) {
             return new Vector<Word>();
@@ -68,7 +68,7 @@ public class YandexVocabularyImpl implements Vocabulary {
             if (name.equals("def")) {
                 result.articles.add(ParseDef(parser));
             } else {
-                skip(parser);
+                Skip(parser);
             }
         }
 
@@ -103,7 +103,7 @@ public class YandexVocabularyImpl implements Vocabulary {
             if (tag_name.equals("tr")) {
                 result.translations.add(ParseTr(parser));
             } else {
-                skip(parser);
+                Skip(parser);
             }
         }
 
@@ -124,14 +124,15 @@ public class YandexVocabularyImpl implements Vocabulary {
             String tag_name = parser.getName();
 
             if (tag_name.equals("text")) {
-                result.text = parser.getText();
-                skip(parser);
+                result.text = ReadText(parser);
+                parser.require(XmlPullParser.END_TAG, null, "text");
+                continue;
             }
 
             if (tag_name.equals("syn")) {
                 result.synonyms.add(ParseSyn(parser));
             } else {
-                skip(parser);
+                Skip(parser);
             }
         }
 
@@ -149,10 +150,13 @@ public class YandexVocabularyImpl implements Vocabulary {
                 continue;
             }
 
-            if (parser.getName().equals("text")) {
-                result = parser.getText();
+            String tag_name = parser.getName();
+
+            if (tag_name.equals("text")) {
+                result = ReadText(parser);
+                parser.require(XmlPullParser.END_TAG, null, "text");
             } else {
-                skip(parser);
+                Skip(parser);
             }
         }
 
@@ -164,7 +168,7 @@ public class YandexVocabularyImpl implements Vocabulary {
     }
 
 
-    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private void Skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
         }
@@ -179,6 +183,16 @@ public class YandexVocabularyImpl implements Vocabulary {
                     break;
             }
         }
+    }
+
+
+    private String ReadText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String result = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = parser.getText();
+            parser.nextTag();
+        }
+        return result;
     }
 
 
