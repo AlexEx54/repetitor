@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -25,6 +24,7 @@ public class YandexVocabularyImpl implements Vocabulary {
         try {
             InputStream stream = GetWordArticleXmlStream(new Word("время"), direction);
             TranslationResult translationResult = ParseWordArticleXml(stream, word);
+            result = TranslationResultAsList(translationResult);
         } catch (Exception e) {
             return new Vector<Word>();
         }
@@ -192,6 +192,28 @@ public class YandexVocabularyImpl implements Vocabulary {
             result = parser.getText();
             parser.nextTag();
         }
+        return result;
+    }
+
+
+    private Vector<Word> TranslationResultAsList(TranslationResult translation_result) {
+        Vector<Word> result = new Vector<Word>();
+
+        Vector<Word> translations_only = new Vector<Word>();
+        Vector<Word> synonyms = new Vector<Word>();
+
+        for (TranslateArticle article: translation_result.articles) {
+            for (Translation translation: article.translations) {
+                translations_only.add(new Word(translation.text));
+                for (String synonym: translation.synonyms) {
+                    synonyms.add(new Word(synonym));
+                }
+            }
+        }
+
+        result.addAll(translations_only);
+        result.addAll(synonyms);
+
         return result;
     }
 
