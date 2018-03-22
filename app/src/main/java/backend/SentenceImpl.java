@@ -30,6 +30,7 @@ public final class SentenceImpl implements Sentence {
                                                                                     "с",
                                                                                     "у",
                                                                                     "и",
+                                                                                    "б",
                                                                                     "нет",
                                                                                     "за",
                                                                                     "над",
@@ -47,7 +48,8 @@ public final class SentenceImpl implements Sentence {
     public Vector<Word> GetWords() {
         // TODO: use streams after API 24 is available
 
-        String[] words = sentence_.replaceAll("[^\\p{L} ]", "").split("\\s+");
+        String[] words = sentence_.replaceAll("[^\\p{L}- ]", "").toLowerCase().
+                split("\\s+");
         Vector<String> wordsAsList = new Vector<String>(Arrays.asList(words));
 
         return ToWords(RemoveRussianPreps(wordsAsList));

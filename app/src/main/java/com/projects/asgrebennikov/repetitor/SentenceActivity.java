@@ -1,7 +1,10 @@
 package com.projects.asgrebennikov.repetitor;
 
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -123,7 +126,6 @@ public class SentenceActivity extends AppCompatActivity {
 
         Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 rusTextSupplier_.SaveCursor();
@@ -138,6 +140,22 @@ public class SentenceActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+        textView.setGravity(Gravity.CENTER);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                if (params.guidePercent < 0.4f) {
+                    params.guidePercent = 0.5f;
+                } else {
+                    params.guidePercent = 0.2f;
+                }
+                guideLine.setLayoutParams(params);
+            }
+            });
 
         MyRunnable myRunnable = new MyRunnable();
         Thread t = new Thread(myRunnable);
