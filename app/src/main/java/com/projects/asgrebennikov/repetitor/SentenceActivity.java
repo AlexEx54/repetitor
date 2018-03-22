@@ -24,6 +24,7 @@ import backend.Vocabulary;
 import backend.Word;
 import backend.YandexVocabularyImpl;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -80,15 +81,26 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
+
+                WordListItem item = (WordListItem) parent.getItemAtPosition(position);
+                if (item.getTranslations() != null) {
+                    item.setFolded(!item.isFolded());
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+
                 Flowable.fromCallable(() -> {
-                    WordListItem item = (WordListItem) parent.getItemAtPosition(position);
                     YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
                     Vector<Word> translations = vocabulary.Translate(item.getWord(), Vocabulary.TranslateDirection.RU_EN);
-                    return new Vector<Word>();
+                    return translations;
                 })
                         .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.single())
-                        .subscribe(System.out::println, Throwable::printStackTrace);
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((Vector<Word> words) -> {
+                            item.setTranslations(words);
+                            item.setFolded(!item.isFolded());
+                            adapter.notifyDataSetChanged();
+                        }, Throwable::printStackTrace);
             }
         });
 

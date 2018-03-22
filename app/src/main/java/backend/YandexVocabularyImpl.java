@@ -22,7 +22,7 @@ public class YandexVocabularyImpl implements Vocabulary {
         Vector<Word> result = null;
 
         try {
-            InputStream stream = GetWordArticleXmlStream(new Word("время"), direction);
+            InputStream stream = GetWordArticleXmlStream(word, direction);
             TranslationResult translationResult = ParseWordArticleXml(stream, word);
             result = TranslationResultAsList(translationResult);
         } catch (Exception e) {

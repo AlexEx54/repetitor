@@ -2,6 +2,7 @@ package com.projects.asgrebennikov.repetitor;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +32,19 @@ public class WordsArrayAdapter<T> extends ArrayAdapter<T> {
         textView.setTextColor(Color.WHITE);
         textView.setGravity(Gravity.CENTER);
 
-        Random rand = new Random();
-        int randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
-        while ((randomIndex % 2) != (position % 2)) {
-            randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
+        ColorDrawable cd = (ColorDrawable) textView.getBackground();
+        if (textView.getBackground() == null)
+        {
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
+            while ((randomIndex % 2) != (position % 2)) {
+                randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
+            }
+
+            int randomColor = colors[randomIndex];
+
+            view.setBackgroundColor(randomColor);
         }
-
-        int randomColor = colors[randomIndex];
-
-        view.setBackgroundColor(randomColor);
 
         return view;
     }

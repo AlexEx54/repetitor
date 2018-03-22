@@ -7,6 +7,9 @@ package com.projects.asgrebennikov.repetitor;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.Vector;
 
 import backend.Word;
@@ -47,13 +50,20 @@ public class WordListItem {
 
     @Override
     public String toString() {
-        String result = word_.GetText();
+        String result = StringUtils.capitalize(word_.GetText());
 
         if (!folded_ && (translations_ != null)) {
             result += "\n -------------------------- \n";
 
+            int DISPLAY_TRANSLATIONS_LIMIT = 3;
+
+            int printed_translations = 0;
             for (Word translation: translations_) {
-                result += translation.GetText() + "\n";
+                if (printed_translations > DISPLAY_TRANSLATIONS_LIMIT) {
+                    break;
+                }
+                printed_translations++;
+                result += StringUtils.capitalize(translation.GetText()) + "\n";
             }
         }
 
