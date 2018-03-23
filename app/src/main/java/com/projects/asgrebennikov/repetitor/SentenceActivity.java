@@ -31,40 +31,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-class MyRunnable implements Runnable {
-
-    private static String yandexKey = "dict.1.1.20171219T092115Z.b4d251fe6793335a.ce9863aa4d1660707da362b3a1e2122fa7db659c";
-
-    public void run() {
-        try {
-            URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?" +
-                    "key=" + yandexKey + "&" +
-                    "lang=ru-en" + "&" +
-                    "flags=4" + "&" +
-                    "text=перебежавший");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            in.read();
-
-            Scanner s = new Scanner(in).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            result = "";
-
-           /*
-            1. Используется словарь если слово словарное (с флагом 4 - формы слова).
-            2. Иначе, используется переводчик.
-            3. family filter - отсекает матерные слова (не нужен)
-             */
-
-        } catch ( Exception e) {
-            String what = e.getMessage();
-            what = "";
-        }
-    }
-
-}
-
 public class SentenceActivity extends AppCompatActivity {
 
     @Override
@@ -94,7 +60,7 @@ public class SentenceActivity extends AppCompatActivity {
 
                 Flowable.fromCallable(() -> {
                     YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
-                    Vector<Word> translations = vocabulary.Translate(item.getWord(), Vocabulary.TranslateDirection.RU_EN);
+                    Vector<Word> translations = vocabulary.Translate(item.getWord(), item.getTranslateDirection());
                     return translations;
                 })
                         .subscribeOn(Schedulers.io())
@@ -107,19 +73,30 @@ public class SentenceActivity extends AppCompatActivity {
             }
         });
 
-        InputStream ins = getResources().openRawResource(
+        InputStream rus_stream = getResources().openRawResource(
                 getResources().getIdentifier("russian_text",
+                        "raw", getPackageName()));
+        InputStream eng_stream = getResources().openRawResource(
+                getResources().getIdentifier("english_text",
                         "raw", getPackageName()));
 
         try {
-            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
             rusTextSupplier_.SaveCursor();
             rusTextSupplier_.LoadCursor();
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
+            engTextSupplier_.SaveCursor();
+            engTextSupplier_.LoadCursor();
+
+            rusSentence_ = rusTextSupplier_.GetNextSentence();
+            engSentence_ = engTextSupplier_.GetNextSentence();
+            Sentence currentSentence = rusSentence_;
+            currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-            Sentence sentence = rusTextSupplier_.GetNextSentence();
-            textView.setText(sentence.AsString());
-            Vector<Word> words = sentence.GetWords();
-            wordsList_.addAll(ToWordListItems(words));
+            textView.setText(currentSentence.AsString());
+            Vector<Word> words = currentSentence.GetWords();
+            wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
         } catch (Exception e) {
             finish();
         }
@@ -129,15 +106,29 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 rusTextSupplier_.SaveCursor();
+                engTextSupplier_.SaveCursor();
+
+                Sentence currentSentence = null;
+
+                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
+                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
+                    currentSentence = engSentence_;
+                } else {
+                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+                    currentSentence = rusSentence_;
+                }
+
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-                Sentence sentence = rusTextSupplier_.GetNextSentence();
-                textView.setText(sentence.AsString());
-                Vector<Word> words = sentence.GetWords();
+                textView.setText(currentSentence.AsString());
+                Vector<Word> words = currentSentence.GetWords();
                 ListView lv = (ListView) findViewById(R.id.wordsListView);
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
-                wordsList_.addAll(ToWordListItems(words));
+                wordsList_.addAll(ToWordListItems(words, currentDirection_));
                 adapter.notifyDataSetChanged();
+
+                rusSentence_ = rusTextSupplier_.GetNextSentence();
+                engSentence_ = engTextSupplier_.GetNextSentence();
             }
         });
 
@@ -155,26 +146,27 @@ public class SentenceActivity extends AppCompatActivity {
                 }
                 guideLine.setLayoutParams(params);
             }
-            });
-
-        MyRunnable myRunnable = new MyRunnable();
-        Thread t = new Thread(myRunnable);
-        t.start();
+        });
     }
 
 
-    private Vector<WordListItem> ToWordListItems(Vector<Word> words) {
+    private Vector<WordListItem> ToWordListItems(Vector<Word> words,
+                                                 Vocabulary.TranslateDirection translateDirection) {
         Vector<WordListItem> result = new Vector<WordListItem>();
 
         for (Word word: words) {
-            result.add(new WordListItem(word));
+            result.add(new WordListItem(word, translateDirection));
         }
 
         return result;
     }
 
-
     private TextSupplier rusTextSupplier_;
+    private TextSupplier engTextSupplier_;
     private ArrayList<WordListItem> wordsList_;
+
+    private Sentence rusSentence_;
+    private Sentence engSentence_;
+    private Vocabulary.TranslateDirection currentDirection_;
 
 } // class SentenceActivity

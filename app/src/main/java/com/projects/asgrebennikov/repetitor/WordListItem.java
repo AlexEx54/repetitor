@@ -12,15 +12,17 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Vector;
 
+import backend.Vocabulary;
 import backend.Word;
 
 
 public class WordListItem {
 
-    public WordListItem(@NonNull Word word) {
+    public WordListItem(@NonNull Word word, Vocabulary.TranslateDirection translateDirection) {
         word_ = word;
         setTranslations(null);
         setFolded(true);
+        translateDirection_ = translateDirection;
     }
 
 
@@ -34,8 +36,8 @@ public class WordListItem {
     }
 
 
-    public void setTranslations(Vector<Word> translations_) {
-        this.translations_ = translations_;
+    public void setTranslations(Vector<Word> translations) {
+        this.translations_ = translations;
     }
 
 
@@ -44,8 +46,16 @@ public class WordListItem {
     }
 
 
-    public void setFolded(boolean folded_) {
-        this.folded_ = folded_;
+    public void setFolded(boolean folded) {
+        this.folded_ = folded;
+    }
+
+    public Vocabulary.TranslateDirection getTranslateDirection() {
+        return translateDirection_;
+    }
+
+    public void setTranslateDirection(Vocabulary.TranslateDirection translateDirection) {
+        this.translateDirection_ = translateDirection;
     }
 
     @Override
@@ -74,6 +84,7 @@ public class WordListItem {
     private Word word_;
     private Vector<Word> translations_;
     private boolean folded_;
+    private Vocabulary.TranslateDirection translateDirection_;
 
 
 }
