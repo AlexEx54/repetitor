@@ -147,6 +147,15 @@ public class SentenceActivity extends AppCompatActivity {
                 guideLine.setLayoutParams(params);
             }
         });
+        textView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeRight() {
+            }
+
+            @Override
+            public void onSwipeLeft() {
+            }
+        });
     }
 
 
