@@ -121,7 +121,6 @@ public class SentenceActivity extends AppCompatActivity {
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
                 textView.setText(currentSentence.AsString());
                 Vector<Word> words = currentSentence.GetWords();
-                ListView lv = (ListView) findViewById(R.id.wordsListView);
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
                 wordsList_.addAll(ToWordListItems(words, currentDirection_));
@@ -149,11 +148,28 @@ public class SentenceActivity extends AppCompatActivity {
         });
         textView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
-            public void onSwipeRight() {
-            }
-
-            @Override
             public void onSwipeLeft() {
+                TextSupplier currentSupplier = null;
+                Sentence currentSentence = null;
+
+                switch (currentDirection_) {
+                    case RU_EN: {
+                        currentSupplier = rusTextSupplier_;
+                        currentSentence = rusSentence_;
+                    }
+                    case EN_RU: {
+                        currentSupplier = engTextSupplier_;
+                        currentSentence = engSentence_;
+                    }
+                }
+
+                currentSupplier.SaveCursor();
+                currentSentence = currentSupplier.GetNextSentence();
+                textView.setText(currentSentence.AsString());
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
+                wordsList_.clear();
+                wordsList_.addAll(ToWordListItems(currentSentence.GetWords(), currentDirection_));
+                adapter.notifyDataSetChanged();
             }
         });
     }
