@@ -1,7 +1,6 @@
 package backend;
 
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -10,18 +9,6 @@ import java.util.Vector;
 
 import io.reactivex.*;
 import io.reactivex.schedulers.Schedulers;
-
-class HelloWorld {
-    public static void main(String[] args) {
-        Flowable.just("Hello world").subscribe(System.out::println);
-    }
-}
-
-
-class MyResult {
-    public String res;
-}
-
 
 
 public final class SentenceImpl implements Sentence {
@@ -43,6 +30,7 @@ public final class SentenceImpl implements Sentence {
                                                                                     "с",
                                                                                     "у",
                                                                                     "и",
+                                                                                    "б",
                                                                                     "нет",
                                                                                     "за",
                                                                                     "над",
@@ -57,16 +45,14 @@ public final class SentenceImpl implements Sentence {
     }
 
 
-    public Vector<String> GetWords() {
-        String[] words = sentence_.replaceAll("[^\\p{L} ]", "").split("\\s+");
+    public Vector<Word> GetWords() {
+        // TODO: use streams after API 24 is available
+
+        String[] words = sentence_.replaceAll("[^\\p{L}- ]", "").toLowerCase().
+                split("\\s+");
         Vector<String> wordsAsList = new Vector<String>(Arrays.asList(words));
 
-        Flowable.just(new MyResult())
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.newThread())
-                .subscribe( s -> wordsAsList.add(s.res) );
-
-        return RemoveRussianPreps(wordsAsList);
+        return ToWords(RemoveRussianPreps(wordsAsList));
     }
 
 
@@ -78,5 +64,16 @@ public final class SentenceImpl implements Sentence {
     private Vector<String> RemoveRussianPreps( Vector<String> source ) {
         source.removeAll(russianPreps_);
         return source;
+    }
+
+
+    private Vector<Word> ToWords(Vector<String> wordsAsStrings) {
+        Vector<Word> result = new Vector<Word>();
+
+        for ( String word: wordsAsStrings ) {
+            result.add(new Word(word));
+        }
+
+        return result;
     }
 }

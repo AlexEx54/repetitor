@@ -8,6 +8,6 @@ import java.util.Vector;
 
 public interface Sentence {
 
-    public Vector<String> GetWords();
+    public Vector<Word> GetWords();
     public String AsString();
 }

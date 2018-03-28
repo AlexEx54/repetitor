@@ -1,161 +1,199 @@
 package com.projects.asgrebennikov.repetitor;
 
-import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Vector;
 
 import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
+import backend.Vocabulary;
+import backend.Word;
+import backend.YandexVocabularyImpl;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-
-class MyRunnable implements Runnable {
-
-    private static String yandexKey = "dict.1.1.20171219T092115Z.b4d251fe6793335a.ce9863aa4d1660707da362b3a1e2122fa7db659c";
-
-    public void run() {
-        try {
-            URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?" +
-                    "key=" + yandexKey + "&" +
-                    "lang=ru-en" + "&" +
-                    "flags=4" + "&" +
-                    "text=перебежавший");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            in.read();
-
-            Scanner s = new Scanner(in).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            result = "";
-
-           /*
-            1. Используется словарь если слово словарное (с флагом 4 - формы слова).
-            2. Иначе, используется переводчик.
-            3. family filter - отсекает матерные слова (не нужен)
-             */
-
-        } catch ( Exception e) {
-            String what = e.getMessage();
-            what = "";
-        }
-    }
-
-}
 
 public class SentenceActivity extends AppCompatActivity {
-
-    private TextSupplier rusTextSupplier_;
-    private ArrayList<String> wordsList_;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_sentence);
 
-        wordsList_ = new ArrayList<String>();
-
+        wordsList_ = new ArrayList<WordListItem>();
         ListView lv = (ListView) findViewById(R.id.wordsListView);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                wordsList_) {
-
-                int[] colors = {
-                         Color.parseColor("#8CBF26"), // lime
-                         Color.parseColor("#A200FF"), // purple
-                         Color.parseColor("#FF0097"), // magenta
-                         Color.parseColor("#A05000"), // brown
-                         Color.parseColor("#E671B8"), // pink
-                         Color.parseColor("#F09609"), // orange
-                         Color.parseColor("#E51400"), // red
-                         Color.parseColor("#339933"), // green
-                };
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent){
-                    // Get the current item from ListView
-                    View view = super.getView(position,convertView,parent);
-
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(Color.WHITE);
-                    textView.setGravity(Gravity.CENTER);
-
-                    Random rand = new Random();
-                    int randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
-                    while ((randomIndex % 2) != (position % 2)) {
-                        randomIndex = rand.nextInt(((colors.length - 1) - 0) + 1) + 0;
-                    }
-
-                    int randomColor = colors[randomIndex];
-
-                    view.setBackgroundColor(randomColor);
-
-                    return view;
-                }
-            };
-
-        InputStream ins = getResources().openRawResource(
-                getResources().getIdentifier("russian_text",
-                        "raw", getPackageName()));
-
+        ArrayAdapter<WordListItem> adapter = new WordsArrayAdapter<WordListItem>(this,
+                                                                      android.R.layout.simple_list_item_1,
+                                                                      wordsList_);
         lv.setAdapter(adapter);
 
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+
+                WordListItem item = (WordListItem) parent.getItemAtPosition(position);
+                if (item.getTranslations() != null) {
+                    item.setFolded(!item.isFolded());
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+
+                Flowable.fromCallable(() -> {
+                    YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
+                    Vector<Word> translations = vocabulary.Translate(item.getWord(), item.getTranslateDirection());
+                    return translations;
+                })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((Vector<Word> words) -> {
+                            item.setTranslations(words);
+                            item.setFolded(!item.isFolded());
+                            adapter.notifyDataSetChanged();
+                        }, Throwable::printStackTrace);
+            }
+        });
+
+        InputStream rus_stream = getResources().openRawResource(
+                getResources().getIdentifier("russian_text",
+                        "raw", getPackageName()));
+        InputStream eng_stream = getResources().openRawResource(
+                getResources().getIdentifier("english_text",
+                        "raw", getPackageName()));
 
         try {
-            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), ins, "russian_text");
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
             rusTextSupplier_.SaveCursor();
             rusTextSupplier_.LoadCursor();
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
+            engTextSupplier_.SaveCursor();
+            engTextSupplier_.LoadCursor();
+
+            rusSentence_ = rusTextSupplier_.GetNextSentence();
+            engSentence_ = engTextSupplier_.GetNextSentence();
+            Sentence currentSentence = rusSentence_;
+            currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-            Sentence sentence = rusTextSupplier_.GetNextSentence();
-            textView.setText(sentence.AsString());
-            Vector<String> words = sentence.GetWords();
-            wordsList_.addAll(words);
+            textView.setText(currentSentence.AsString());
+            Vector<Word> words = currentSentence.GetWords();
+            wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
         } catch (Exception e) {
             finish();
         }
 
-
-
         Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 rusTextSupplier_.SaveCursor();
+                engTextSupplier_.SaveCursor();
+
+                Sentence currentSentence = null;
+
+                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
+                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
+                    currentSentence = engSentence_;
+                } else {
+                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+                    currentSentence = rusSentence_;
+                }
+
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-                Sentence sentence = rusTextSupplier_.GetNextSentence();
-                textView.setText(sentence.AsString());
-                Vector<String> words = sentence.GetWords();
-                ListView lv = (ListView) findViewById(R.id.wordsListView);
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) lv.getAdapter();
+                textView.setText(currentSentence.AsString());
+                Vector<Word> words = currentSentence.GetWords();
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
-                wordsList_.addAll(words);
-                wordsList_.add("some \n --------------- \n and \n more \n strings");
+                wordsList_.addAll(ToWordListItems(words, currentDirection_));
                 adapter.notifyDataSetChanged();
+
+                rusSentence_ = rusTextSupplier_.GetNextSentence();
+                engSentence_ = engTextSupplier_.GetNextSentence();
             }
         });
 
-        MyRunnable myRunnable = new MyRunnable();
-        Thread t = new Thread(myRunnable);
-        t.start();
+        TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+        textView.setGravity(Gravity.CENTER);
+        textView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                TextSupplier currentSupplier = null;
+                Sentence currentSentence = null;
+
+                switch (currentDirection_) {
+                    case RU_EN: {
+                        currentSupplier = rusTextSupplier_;
+                        currentSentence = rusSentence_;
+                        break;
+                    }
+                    case EN_RU: {
+                        currentSupplier = engTextSupplier_;
+                        currentSentence = engSentence_;
+                        break;
+                    }
+                }
+
+                currentSupplier.SaveCursor();
+                currentSentence = currentSupplier.GetNextSentence();
+                textView.setText(currentSentence.AsString());
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
+                wordsList_.clear();
+                wordsList_.addAll(ToWordListItems(currentSentence.GetWords(), currentDirection_));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onSwipeBottom() {
+                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                params.guidePercent = 0.5f;
+                guideLine.setLayoutParams(params);
+            }
+
+            @Override
+            public void onSwipeTop() {
+                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                params.guidePercent = 0.2f;
+                guideLine.setLayoutParams(params);
+            }
+
+        });
     }
+
+
+    private Vector<WordListItem> ToWordListItems(Vector<Word> words,
+                                                 Vocabulary.TranslateDirection translateDirection) {
+        Vector<WordListItem> result = new Vector<WordListItem>();
+
+        for (Word word: words) {
+            result.add(new WordListItem(word, translateDirection));
+        }
+
+        return result;
+    }
+
+    private TextSupplier rusTextSupplier_;
+    private TextSupplier engTextSupplier_;
+    private ArrayList<WordListItem> wordsList_;
+
+    private Sentence rusSentence_;
+    private Sentence engSentence_;
+    private Vocabulary.TranslateDirection currentDirection_;
 
 } // class SentenceActivity

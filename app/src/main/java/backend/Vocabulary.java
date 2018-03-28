@@ -15,7 +15,7 @@ public interface Vocabulary {
         AUTO
     }
 
-    public Vector<Word> translate(Word word, TranslateDirection direction);
+    public Vector<Word> Translate(Word word, TranslateDirection direction);
 }
 
 
