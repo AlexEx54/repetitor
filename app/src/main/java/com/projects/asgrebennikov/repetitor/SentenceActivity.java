@@ -12,12 +12,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Vector;
 
 import backend.Sentence;
@@ -133,19 +129,6 @@ public class SentenceActivity extends AppCompatActivity {
 
         TextView textView = (TextView) findViewById(R.id.sentenceTextView);
         textView.setGravity(Gravity.CENTER);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
-                if (params.guidePercent < 0.4f) {
-                    params.guidePercent = 0.5f;
-                } else {
-                    params.guidePercent = 0.2f;
-                }
-                guideLine.setLayoutParams(params);
-            }
-        });
         textView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
@@ -156,10 +139,12 @@ public class SentenceActivity extends AppCompatActivity {
                     case RU_EN: {
                         currentSupplier = rusTextSupplier_;
                         currentSentence = rusSentence_;
+                        break;
                     }
                     case EN_RU: {
                         currentSupplier = engTextSupplier_;
                         currentSentence = engSentence_;
+                        break;
                     }
                 }
 
@@ -171,6 +156,23 @@ public class SentenceActivity extends AppCompatActivity {
                 wordsList_.addAll(ToWordListItems(currentSentence.GetWords(), currentDirection_));
                 adapter.notifyDataSetChanged();
             }
+
+            @Override
+            public void onSwipeBottom() {
+                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                params.guidePercent = 0.5f;
+                guideLine.setLayoutParams(params);
+            }
+
+            @Override
+            public void onSwipeTop() {
+                Guideline guideLine = (Guideline) findViewById(R.id.guideline2);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                params.guidePercent = 0.2f;
+                guideLine.setLayoutParams(params);
+            }
+
         });
     }
 
