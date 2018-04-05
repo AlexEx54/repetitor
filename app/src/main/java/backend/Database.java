@@ -5,7 +5,7 @@ package backend;
  */
 
 public interface Database {
-    public void Open(String version);
+    public void Open(String path, String version);
 
     public void SaveWord(WordContext wordContext);
 }

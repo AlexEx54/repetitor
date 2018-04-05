@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class DatabaseImpl implements Database {
 
-    public void Open(String version) {
-        db_ = SQLiteDatabase.openOrCreateDatabase("repetitor", null);
+    public void Open(String path, String version) {
+        db_ = SQLiteDatabase.openOrCreateDatabase(path + "/repetitor.db", null);
         String dbVersion = GetDatabaseVersion();
         if (dbVersion == null || dbVersion != version)
         {
