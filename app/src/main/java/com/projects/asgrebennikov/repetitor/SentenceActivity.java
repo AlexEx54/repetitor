@@ -105,9 +105,6 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rusTextSupplier_.SaveCursor();
-                engTextSupplier_.SaveCursor();
-
                 Sentence currentSentence = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
@@ -126,8 +123,14 @@ public class SentenceActivity extends AppCompatActivity {
                 wordsList_.addAll(ToWordListItems(words, currentDirection_));
                 adapter.notifyDataSetChanged();
 
-                rusSentence_ = rusTextSupplier_.GetNextSentence();
-                engSentence_ = engTextSupplier_.GetNextSentence();
+                if (currentDirection_ == Vocabulary.TranslateDirection.EN_RU)
+                {
+                    rusTextSupplier_.SaveCursor();
+                    engTextSupplier_.SaveCursor();
+
+                    rusSentence_ = rusTextSupplier_.GetNextSentence();
+                    engSentence_ = engTextSupplier_.GetNextSentence();
+                }
             }
         });
 
