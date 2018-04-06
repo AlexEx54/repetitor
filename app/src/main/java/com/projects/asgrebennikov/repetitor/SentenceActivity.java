@@ -78,10 +78,12 @@ public class SentenceActivity extends AppCompatActivity {
 
         try {
             rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
-            rusTextSupplier_.SaveCursor();
-            rusTextSupplier_.LoadCursor();
             engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
-            engTextSupplier_.SaveCursor();
+
+//            rusTextSupplier_.SaveCursor();
+//            engTextSupplier_.SaveCursor();
+
+            rusTextSupplier_.LoadCursor();
             engTextSupplier_.LoadCursor();
 
             rusSentence_ = rusTextSupplier_.GetNextSentence();
@@ -101,9 +103,6 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rusTextSupplier_.SaveCursor();
-                engTextSupplier_.SaveCursor();
-
                 Sentence currentSentence = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
@@ -122,8 +121,14 @@ public class SentenceActivity extends AppCompatActivity {
                 wordsList_.addAll(ToWordListItems(words, currentDirection_));
                 adapter.notifyDataSetChanged();
 
-                rusSentence_ = rusTextSupplier_.GetNextSentence();
-                engSentence_ = engTextSupplier_.GetNextSentence();
+                if (currentDirection_ == Vocabulary.TranslateDirection.EN_RU)
+                {
+                    rusTextSupplier_.SaveCursor();
+                    engTextSupplier_.SaveCursor();
+
+                    rusSentence_ = rusTextSupplier_.GetNextSentence();
+                    engSentence_ = engTextSupplier_.GetNextSentence();
+                }
             }
         });
 
