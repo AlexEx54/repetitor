@@ -1,5 +1,8 @@
 package com.projects.asgrebennikov.repetitor;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import backend.Database;
+import backend.DatabaseImpl;
 import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
@@ -179,6 +184,9 @@ public class SentenceActivity extends AppCompatActivity {
             }
 
         });
+
+        db_ = new DatabaseImpl();
+        db_.Open(getFilesDir().toString(),"1.0.0");
     }
 
 
@@ -193,6 +201,24 @@ public class SentenceActivity extends AppCompatActivity {
         return result;
     }
 
+    private void PassTextToGTranslateApp() {
+        //                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.setPackage("com.google.android.apps.translate");
+//
+//                Uri uri = new Uri.Builder()
+//                        .scheme("http")
+//                        .authority("translate.google.com")
+//                        .path("/m/translate")
+//                        .appendQueryParameter("q", "корова")
+//                        .appendQueryParameter("tl", "en") // target language
+//                        .appendQueryParameter("sl", "ru") // source language
+//                        .build();
+//                //intent.setType("text/plain"); //not needed, but possible
+//                intent.setData(uri);
+//                startActivity(intent);
+    }
+
     private TextSupplier rusTextSupplier_;
     private TextSupplier engTextSupplier_;
     private ArrayList<WordListItem> wordsList_;
@@ -200,5 +226,6 @@ public class SentenceActivity extends AppCompatActivity {
     private Sentence rusSentence_;
     private Sentence engSentence_;
     private Vocabulary.TranslateDirection currentDirection_;
+    private Database db_;
 
 } // class SentenceActivity
