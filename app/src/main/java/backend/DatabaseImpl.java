@@ -13,7 +13,7 @@ public class DatabaseImpl implements Database {
     public void Open(String path, String version) {
         db_ = SQLiteDatabase.openOrCreateDatabase(path + "/repetitor.db", null);
         String dbVersion = GetDatabaseVersion();
-        if (dbVersion == null || dbVersion != version)
+        if (dbVersion == null || !dbVersion.equals(version))
         {
             CreateDatabase(version);
         }
@@ -30,7 +30,8 @@ public class DatabaseImpl implements Database {
         try {
             Cursor sql_result = db_.rawQuery("SELECT version FROM db_info", null);
             sql_result.moveToFirst();
-            String version = sql_result.getString(sql_result.getColumnIndexOrThrow("version"));
+            int index_col = sql_result.getColumnIndexOrThrow("version");
+            String version = sql_result.getString(index_col);
             return  version;
         }
         catch (Exception e) {
