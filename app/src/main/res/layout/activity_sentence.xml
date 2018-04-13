@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:minHeight="0dp"
     android:background="@color/color_black"
+    android:keepScreenOn="true"
     tools:context="com.projects.asgrebennikov.repetitor.SentenceActivity"
     tools:layout_editor_absoluteY="81dp">
 
