@@ -52,7 +52,9 @@ public final class SentenceImpl implements Sentence {
                 split("\\s+");
         Vector<String> wordsAsList = new Vector<String>(Arrays.asList(words));
 
-        return ToWords(RemoveRussianPreps(wordsAsList));
+        return ToWords(
+                RemoveShortWords(
+                    RemoveRussianPreps(wordsAsList)));
     }
 
 
@@ -63,6 +65,17 @@ public final class SentenceImpl implements Sentence {
 
     private Vector<String> RemoveRussianPreps( Vector<String> source ) {
         source.removeAll(russianPreps_);
+        return source;
+    }
+
+
+    private Vector<String> RemoveShortWords( Vector<String> source ) {
+        for( String word: source ) {
+            if (word.length() == 1) {
+                source.remove(word);
+            }
+        }
+
         return source;
     }
 
