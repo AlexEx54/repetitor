@@ -30,10 +30,12 @@ public class TextSupplierImpl_fix implements TextSupplier {
     public Sentence GetNextSentence() {
         final StringBuilder sentenceStrBuilder = new StringBuilder();
         int cursorIncrement = 0;
+        boolean canReadFurther = true;
         try {
             for (; ; ) {
                 int charAsInt = fileStream_.read(); // TODO: eof handling
                 if (charAsInt < 0) { // indication of read error
+                    canReadFurther = false;
                     break;
                 }
                 cursorIncrement++;
@@ -49,7 +51,8 @@ public class TextSupplierImpl_fix implements TextSupplier {
 
         cursor_ += cursorIncrement;
         String sentenceAsStr = sentenceStrBuilder.toString();
-        if (sentenceAsStr.isEmpty()) {
+
+        if (sentenceAsStr.isEmpty() && canReadFurther) {
             return GetNextSentence();
         }
 
