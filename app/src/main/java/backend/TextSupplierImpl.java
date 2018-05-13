@@ -34,6 +34,10 @@ public final class TextSupplierImpl implements TextSupplier {
         return new SentenceImpl(sentenceStr);
     }
 
+    public Sentence GetPrevSentence() {
+        return null;
+    }
+
 
     public boolean SaveCursor() {
         BufferedWriter out = null;

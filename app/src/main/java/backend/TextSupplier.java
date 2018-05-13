@@ -7,6 +7,7 @@ package backend;
 public interface TextSupplier {
 
     Sentence GetNextSentence();
+    Sentence GetPrevSentence();
 
     public boolean SaveCursor();
     public boolean LoadCursor();

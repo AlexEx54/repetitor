@@ -1,5 +1,7 @@
 package backend;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,7 +58,14 @@ public class TextSupplierImpl_fix implements TextSupplier {
             return GetNextSentence();
         }
 
-        return new SentenceImpl(sentenceStrBuilder.toString());
+        sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
+
+        return new SentenceImpl(sentenceAsStr);
+    }
+
+    
+    public Sentence GetPrevSentence() {
+        return null;
     }
 
 
@@ -93,7 +102,7 @@ public class TextSupplierImpl_fix implements TextSupplier {
     }
 
     private boolean IsSentenceDelimiter(char c) {
-        return Arrays.asList(sentenceDelimiters_).contains(c);
+        return ArrayUtils.contains(sentenceDelimiters_, c);
     }
 
 

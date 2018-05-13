@@ -70,8 +70,8 @@ public final class SentenceImpl implements Sentence {
 
 
     private Vector<String> RemoveShortWords( Vector<String> source ) {
-        for( String word: source ) {
-            if (word.length() == 1) {
+        for( String word: new Vector<>(source)) {
+            if (word.length() < 2) {
                 source.remove(word);
             }
         }

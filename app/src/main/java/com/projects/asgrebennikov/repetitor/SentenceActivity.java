@@ -108,7 +108,7 @@ public class SentenceActivity extends AppCompatActivity {
         Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public synchronized void onClick(View v) {
                 Sentence currentSentence = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
