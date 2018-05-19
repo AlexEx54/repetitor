@@ -70,47 +70,26 @@ public class TextSupplierImpl_fix implements TextSupplier {
 
 
     public Sentence GetPrevSentence() {
-        final StringBuilder sentenceStrBuilder = new StringBuilder();
-        int cursorDelta = -2;
-        boolean canReadFurther = true;
-        try {
-            for (; ; ) {
-//                fileStream_.close();
-                rawStream_.reset();
-                fileStream_ = new InputStreamReader(rawStream_, "UTF-8");
-                int skip_count = (int)cursor_ + cursorDelta;
-                if (skip_count < 0) {
-                    break;
-                }
-
-                fileStream_.skip(skip_count);
-
-                int charAsInt = fileStream_.read(); // TODO: eof handling
-                if (charAsInt < 0) { // indication of read error
-                    canReadFurther = false;
-                    break;
-                }
-                cursorDelta--;
-                char char_ = (char) charAsInt;
-                if (IsSentenceDelimiter(char_)) {
-                    break;
-                }
-                sentenceStrBuilder.insert(0, char_);
-            }
-        } catch (IOException e) {
+        if (rewindPoints_.empty()) {
             return null;
         }
 
-        cursor_ += cursorDelta;
-        String sentenceAsStr = sentenceStrBuilder.toString();
+        try {
+            rewindPoints_.pop();
 
-        if (sentenceAsStr.isEmpty() && canReadFurther) {
-            return GetNextSentence();
+            long prevSentencePos = 0;
+            if (rewindPoints_.empty()) {
+                prevSentencePos = 0;
+            } else {
+                prevSentencePos = rewindPoints_.pop();
+            }
+
+            SeekToPosition(prevSentencePos);
+        } catch (Exception e) {
+            return null;
         }
 
-        sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
-
-        return new SentenceImpl(sentenceAsStr);
+        return GetNextSentence();
     }
 
 

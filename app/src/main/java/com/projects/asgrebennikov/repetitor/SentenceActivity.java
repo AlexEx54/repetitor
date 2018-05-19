@@ -86,8 +86,8 @@ public class SentenceActivity extends AppCompatActivity {
             rusTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
             engTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
 
-//            rusTextSupplier_.SaveCursor();
-//            engTextSupplier_.SaveCursor();
+            rusTextSupplier_.SaveCursor();
+            engTextSupplier_.SaveCursor();
 
             rusTextSupplier_.LoadCursor();
             engTextSupplier_.LoadCursor();
