@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import utils.CountingInputStream;
+
 
 /**
  * Created by as.grebennikov on 15.01.18.

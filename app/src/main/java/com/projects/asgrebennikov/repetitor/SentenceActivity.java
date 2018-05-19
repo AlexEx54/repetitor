@@ -149,6 +149,31 @@ public class SentenceActivity extends AppCompatActivity {
                 switch (currentDirection_) {
                     case RU_EN: {
                         currentSupplier = rusTextSupplier_;
+                        break;
+                    }
+                    case EN_RU: {
+                        currentSupplier = engTextSupplier_;
+                        break;
+                    }
+                }
+
+                currentSupplier.SaveCursor();
+                currentSentence = currentSupplier.GetNextSentence();
+                textView.setText(currentSentence.AsString());
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
+                wordsList_.clear();
+                wordsList_.addAll(ToWordListItems(currentSentence.GetWords(), currentDirection_));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                TextSupplier currentSupplier = null;
+                Sentence currentSentence = null;
+
+                switch (currentDirection_) {
+                    case RU_EN: {
+                        currentSupplier = rusTextSupplier_;
                         currentSentence = rusSentence_;
                         break;
                     }
@@ -160,7 +185,7 @@ public class SentenceActivity extends AppCompatActivity {
                 }
 
                 currentSupplier.SaveCursor();
-                currentSentence = currentSupplier.GetNextSentence();
+                currentSentence = currentSupplier.GetPrevSentence();
                 textView.setText(currentSentence.AsString());
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
