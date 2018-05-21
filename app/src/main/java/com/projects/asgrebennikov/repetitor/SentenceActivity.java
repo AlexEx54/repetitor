@@ -86,15 +86,13 @@ public class SentenceActivity extends AppCompatActivity {
             rusTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
             engTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
 
-            rusTextSupplier_.SaveCursor();
-            engTextSupplier_.SaveCursor();
+//            rusTextSupplier_.SaveCursor();
+//            engTextSupplier_.SaveCursor();
 
             rusTextSupplier_.LoadCursor();
             engTextSupplier_.LoadCursor();
 
-            rusSentence_ = rusTextSupplier_.GetNextSentence();
-            engSentence_ = engTextSupplier_.GetNextSentence();
-            Sentence currentSentence = rusSentence_;
+            Sentence currentSentence = rusTextSupplier_.GetNextSentence();
             currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
 
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
@@ -109,32 +107,26 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                Sentence currentSentence = null;
+                TextSupplier currentSupplier = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
                     currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
-                    currentSentence = engSentence_;
+                    currentSupplier = engTextSupplier_;
                 } else {
                     currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
-                    currentSentence = rusSentence_;
+                    currentSupplier = rusTextSupplier_;
                 }
 
+                Sentence sentence = currentSupplier.GetNextSentence();
+                currentSupplier.SaveCursor();
+
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-                textView.setText(currentSentence.AsString());
-                Vector<Word> words = currentSentence.GetWords();
+                textView.setText(sentence.AsString());
+                Vector<Word> words = sentence.GetWords();
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
                 wordsList_.addAll(ToWordListItems(words, currentDirection_));
                 adapter.notifyDataSetChanged();
-
-                if (currentDirection_ == Vocabulary.TranslateDirection.EN_RU)
-                {
-                    rusTextSupplier_.SaveCursor();
-                    engTextSupplier_.SaveCursor();
-
-                    rusSentence_ = rusTextSupplier_.GetNextSentence();
-                    engSentence_ = engTextSupplier_.GetNextSentence();
-                }
             }
         });
 
@@ -144,7 +136,7 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public void onSwipeLeft() {
                 TextSupplier currentSupplier = null;
-                Sentence currentSentence = null;
+
 
                 switch (currentDirection_) {
                     case RU_EN: {
@@ -157,8 +149,10 @@ public class SentenceActivity extends AppCompatActivity {
                     }
                 }
 
-                currentSupplier.SaveCursor();
+                Sentence currentSentence = null;
                 currentSentence = currentSupplier.GetNextSentence();
+                currentSupplier.SaveCursor();
+
                 textView.setText(currentSentence.AsString());
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
@@ -169,23 +163,23 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public void onSwipeRight() {
                 TextSupplier currentSupplier = null;
-                Sentence currentSentence = null;
+
 
                 switch (currentDirection_) {
                     case RU_EN: {
                         currentSupplier = rusTextSupplier_;
-                        currentSentence = rusSentence_;
                         break;
                     }
                     case EN_RU: {
                         currentSupplier = engTextSupplier_;
-                        currentSentence = engSentence_;
                         break;
                     }
                 }
 
-                currentSupplier.SaveCursor();
+                Sentence currentSentence = null;
                 currentSentence = currentSupplier.GetPrevSentence();
+                currentSupplier.SaveCursor();
+
                 textView.setText(currentSentence.AsString());
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
                 wordsList_.clear();
@@ -249,8 +243,6 @@ public class SentenceActivity extends AppCompatActivity {
     private TextSupplier engTextSupplier_;
     private ArrayList<WordListItem> wordsList_;
 
-    private Sentence rusSentence_;
-    private Sentence engSentence_;
     private Vocabulary.TranslateDirection currentDirection_;
     private Database db_;
 

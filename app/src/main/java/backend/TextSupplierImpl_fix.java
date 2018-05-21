@@ -54,8 +54,10 @@ public class TextSupplierImpl_fix implements TextSupplier {
             return null;
         }
 
-        rewindPoints_.push(cursor_);
-        cursor_ += cursorIncrement;
+        rewindPoints_.push(sentenceStartPos_);
+
+        sentenceStartPos_ = sentenceEndPos_;
+        sentenceEndPos_ += cursorIncrement;
 
         String sentenceAsStr = sentenceStrBuilder.toString();
 
@@ -99,7 +101,7 @@ public class TextSupplierImpl_fix implements TextSupplier {
         try {
             FileWriter file = new FileWriter(filesDir_ + "/" + fileName_ + "__cursor", false);
             out = new BufferedWriter(file);
-            out.write(Long.toString(cursor_));
+            out.write(Long.toString(sentenceStartPos_));
             out.close();
         } catch (Exception e) {
             return false;
@@ -142,7 +144,7 @@ public class TextSupplierImpl_fix implements TextSupplier {
     private void FillUpRewindPoints(long topPosition) throws IOException {
         ResetFileStreamPosition();
 
-        while (cursor_ < topPosition) {
+        while (sentenceEndPos_ < topPosition) {
             // pushes rewind points on every GetNextSentence
             Sentence readSentence = GetNextSentence();
             if (readSentence == null) {
@@ -157,18 +159,21 @@ public class TextSupplierImpl_fix implements TextSupplier {
     private void SeekToPosition(long position) throws IOException {
         ResetFileStreamPosition();
         fileStream_.skip(position);
-        cursor_ = position;
+        sentenceStartPos_ = position;
+        sentenceEndPos_ = position;
     }
 
 
     private void ResetFileStreamPosition() throws IOException {
         rawStream_.reset();
         fileStream_ = new InputStreamReader(rawStream_, "UTF-8");
-        cursor_ = 0;
+        sentenceStartPos_ = 0;
+        sentenceEndPos_ = 0;
     }
 
 
-    private long cursor_ = 0; // offset in characters
+    private long sentenceStartPos_ = 0; // offsets in characters
+    private long sentenceEndPos_ = 0;
     private InputStream rawStream_;
     private String fileName_;
     private InputStreamReader fileStream_;
