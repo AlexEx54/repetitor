@@ -54,8 +54,6 @@ public class TextSupplierImpl_fix implements TextSupplier {
             return null;
         }
 
-        rewindPoints_.push(sentenceStartPos_);
-
         sentenceStartPos_ = sentenceEndPos_;
         sentenceEndPos_ += cursorIncrement;
 
@@ -64,6 +62,8 @@ public class TextSupplierImpl_fix implements TextSupplier {
         if (sentenceAsStr.isEmpty() && canReadFurther) {
             return GetNextSentence();
         }
+
+        rewindPoints_.push(sentenceStartPos_);
 
         sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
 
