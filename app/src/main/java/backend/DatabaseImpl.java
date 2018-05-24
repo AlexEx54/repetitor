@@ -21,6 +21,8 @@ public class DatabaseImpl implements Database {
 
     public void SaveWord(WordContext wordContext) {}
 
+    public void RemoveWord(WordContext wordContext) {}
+
 
     private String GetDatabaseVersion()
     {
@@ -44,11 +46,27 @@ public class DatabaseImpl implements Database {
         assert(db_ != null);
         assert(db_.isOpen());
 
+        CreateVersionTable(version);
+        CreateLearningWordsTable();
+    }
+
+
+    private void CreateVersionTable(String version) {
         db_.execSQL("CREATE TABLE db_info (version TEXT NOT NULL)");
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("version", version);
         db_.insertOrThrow("db_info",null, contentValues);
+    }
+
+
+    private void CreateLearningWordsTable() {
+        db_.execSQL("CREATE TABLE learning_words (" +
+                    "id TEXT NOT NULL PRIMARY KEY," +
+                    "word TEXT NOT NULL," +
+                    "containing_sentence TEXT," +
+                    "complementary_sentence TEXT," +
+                    "translation_direction INT NOT NULL)");
     }
 
     private SQLiteDatabase db_ = null;

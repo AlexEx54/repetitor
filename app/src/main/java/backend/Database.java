@@ -8,4 +8,5 @@ public interface Database {
     public void Open(String path, String version);
 
     public void SaveWord(WordContext wordContext);
+    public void RemoveWord(WordContext wordContext);
 }

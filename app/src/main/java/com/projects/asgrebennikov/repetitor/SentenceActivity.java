@@ -205,8 +205,8 @@ public class SentenceActivity extends AppCompatActivity {
 
         });
 
-//        db_ = new DatabaseImpl();
-//        db_.Open(getFilesDir().toString(),"1.0.0");
+        db_ = new DatabaseImpl();
+        db_.Open(getFilesDir().toString(),"1.0.0");
     }
 
 
