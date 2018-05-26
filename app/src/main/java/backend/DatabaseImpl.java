@@ -60,6 +60,13 @@ public class DatabaseImpl implements Database {
         assert(db_ != null);
         assert(db_.isOpen());
 
+        if ((wordContext.word == null) ||
+            (wordContext.containingSentence == null) ||
+            (wordContext.complementarySentence == null)) {
+
+            return;
+        }
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("timestamp", wordContext.timestamp);
         contentValues.put("word", wordContext.word.GetText());

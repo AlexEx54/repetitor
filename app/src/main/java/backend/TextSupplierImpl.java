@@ -67,7 +67,8 @@ public class TextSupplierImpl implements TextSupplier {
 
         sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
 
-        return new SentenceImpl(sentenceAsStr);
+        currentSentence_ = new SentenceImpl(sentenceAsStr);
+        return currentSentence_;
     }
 
 
@@ -91,12 +92,13 @@ public class TextSupplierImpl implements TextSupplier {
             return null;
         }
 
-        return GetNextSentence();
+        currentSentence_ = GetNextSentence();
+        return currentSentence_;
     }
 
 
     public Sentence GetCurrentSentence() {
-        return  null;
+        return currentSentence_;
     }
 
 
@@ -184,6 +186,7 @@ public class TextSupplierImpl implements TextSupplier {
     private InputStreamReader fileStream_;
     private String filesDir_;
     private SizedStack<Long> rewindPoints_;
+    private Sentence currentSentence_;
 
     private final char[] sentenceDelimiters_ = {'.', ';'};
 }

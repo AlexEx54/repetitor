@@ -23,6 +23,7 @@ import backend.TextSupplier;
 import backend.TextSupplierImpl;
 import backend.Vocabulary;
 import backend.Word;
+import backend.WordContext;
 import backend.YandexVocabularyImpl;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -67,7 +68,28 @@ public class SentenceActivity extends AppCompatActivity {
                             item.setTranslations(words);
                             item.setFolded(!item.isFolded());
                             adapter.notifyDataSetChanged();
+                            SaveWordToDb(item.getWord(), item.getTranslateDirection());
                         }, Throwable::printStackTrace);
+            }
+
+
+            private void SaveWordToDb(Word word, Vocabulary.TranslateDirection translateDirection) {
+                WordContext wordContext = new WordContext();
+                wordContext.timestamp = System.currentTimeMillis();
+                wordContext.word = word;
+                wordContext.translateDirection = translateDirection;
+
+                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
+                    wordContext.containingSentence = rusTextSupplier_.GetCurrentSentence();
+                    wordContext.complementarySentence = engTextSupplier_.GetNextSentence();
+                    engTextSupplier_.GetPrevSentence(); // rewind back
+                } else {
+                    wordContext.containingSentence = engTextSupplier_.GetCurrentSentence();
+                    wordContext.complementarySentence = rusTextSupplier_.GetCurrentSentence();
+                    rusTextSupplier_.GetPrevSentence(); // rewind back
+                }
+
+                db_.SaveWord(wordContext);
             }
         });
 
