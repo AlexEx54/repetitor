@@ -5,7 +5,7 @@ package backend;
  */
 
 public class WordContext {
-    public String contextId;
+    public long timestamp;
     public Word word;
     public Sentence containingSentence;
     public Sentence complementarySentence;
