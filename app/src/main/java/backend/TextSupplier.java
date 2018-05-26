@@ -9,6 +9,8 @@ public interface TextSupplier {
     Sentence GetNextSentence();
     Sentence GetPrevSentence();
 
+    Sentence GetCurrentSentence();
+
     public boolean SaveCursor();
     public boolean LoadCursor();
 }

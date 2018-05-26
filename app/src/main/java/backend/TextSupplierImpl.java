@@ -1,5 +1,7 @@
 package backend;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,37 +9,94 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 
-import utils.CountingInputStream;
-
+import utils.SizedStack;
 
 /**
- * Created by as.grebennikov on 15.01.18.
+ * Created by as.grebennikov on 09.05.18.
  */
 
-public final class TextSupplierImpl implements TextSupplier {
+public class TextSupplierImpl implements TextSupplier {
 
     public TextSupplierImpl(String filesDir,
                             InputStream fileStream,
                             String fileName) throws IOException {
         fileName_ = fileName;
-        fileStream_ = new CountingInputStream(fileStream);
-        fileStream_.mark(2048);
+        rawStream_ = fileStream;
+        fileStream_ = new InputStreamReader(fileStream, "UTF-8");
         filesDir_ = filesDir;
-        scanner_ = new Scanner(fileStream_).useDelimiter("(?<=[.?!;])\\s+(?=\\p{Lu})");
+        rewindPoints_ = new SizedStack<Long>(30);
 
+        assert fileStream_.ready();
     }
+
 
     public Sentence GetNextSentence() {
-        String sentenceStr = scanner_.hasNext() ? scanner_.next() : "";
-        cursor_ += sentenceStr.getBytes().length + 1 /*(+whitespace = 1 byte)*/;
-        sentenceStr = sentenceStr.replaceAll("(\\r|\\n)", " ");
-        return new SentenceImpl(sentenceStr);
+        final StringBuilder sentenceStrBuilder = new StringBuilder();
+        int cursorIncrement = 0;
+        boolean canReadFurther = true;
+        try {
+            for (; ; ) {
+                int charAsInt = fileStream_.read(); // TODO: eof handling
+                if (charAsInt < 0) { // indication of read error
+                    canReadFurther = false;
+                    break;
+                }
+                cursorIncrement++;
+                char char_ = (char) charAsInt;
+                if (IsSentenceDelimiter(char_)) {
+                    break;
+                }
+                sentenceStrBuilder.append(char_);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        sentenceStartPos_ = sentenceEndPos_;
+        sentenceEndPos_ += cursorIncrement;
+
+        String sentenceAsStr = sentenceStrBuilder.toString();
+
+        if (sentenceAsStr.isEmpty() && canReadFurther) {
+            return GetNextSentence();
+        }
+
+        rewindPoints_.push(sentenceStartPos_);
+
+        sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
+
+        return new SentenceImpl(sentenceAsStr);
     }
 
+
     public Sentence GetPrevSentence() {
-        return null;
+        if (rewindPoints_.empty()) {
+            return null;
+        }
+
+        try {
+            rewindPoints_.pop();
+
+            long prevSentencePos = 0;
+            if (rewindPoints_.empty()) {
+                prevSentencePos = 0;
+            } else {
+                prevSentencePos = rewindPoints_.pop();
+            }
+
+            SeekToPosition(prevSentencePos);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return GetNextSentence();
+    }
+
+
+    public Sentence GetCurrentSentence() {
+        return  null;
     }
 
 
@@ -47,7 +106,7 @@ public final class TextSupplierImpl implements TextSupplier {
         try {
             FileWriter file = new FileWriter(filesDir_ + "/" + fileName_ + "__cursor", false);
             out = new BufferedWriter(file);
-            out.write(Long.toString(cursor_));
+            out.write(Long.toString(sentenceStartPos_));
             out.close();
         } catch (Exception e) {
             return false;
@@ -59,13 +118,9 @@ public final class TextSupplierImpl implements TextSupplier {
 
     public boolean LoadCursor() {
         try {
-            File file = new File(filesDir_ + "/" + fileName_ + "__cursor");
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String text = reader.readLine();
-            if (text != null) {
-                cursor_ = Integer.parseInt(text);
-            }
-            fileStream_.skip(cursor_);
+            long loadedCursor = LoadCursorValue();
+            FillUpRewindPoints(loadedCursor);
+            SeekToPosition(loadedCursor);
         } catch (Exception e) {
             return false;
         }
@@ -74,11 +129,61 @@ public final class TextSupplierImpl implements TextSupplier {
     }
 
 
-    private long cursor_ = 0; // offset in bytes
-    private String fileName_;
-    private CountingInputStream fileStream_;
-    private String filesDir_;
-    private Scanner scanner_;
+    private boolean IsSentenceDelimiter(char c) {
+        return ArrayUtils.contains(sentenceDelimiters_, c);
+    }
 
-    private final String[] sentenceDelimiters_ = {".", "...", ";"};
+
+    private long LoadCursorValue() throws IOException {
+        File file = new File(filesDir_ + "/" + fileName_ + "__cursor");
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String text = reader.readLine();
+        if (text != null) {
+            return (long) Integer.parseInt(text);
+        }
+
+        return 0;
+    }
+
+    // fills points up to topPosition
+    private void FillUpRewindPoints(long topPosition) throws IOException {
+        ResetFileStreamPosition();
+
+        while (sentenceEndPos_ < topPosition) {
+            // pushes rewind points on every GetNextSentence
+            Sentence readSentence = GetNextSentence();
+            if (readSentence == null) {
+                break;
+            }
+        }
+
+        ResetFileStreamPosition();
+    }
+
+
+    private void SeekToPosition(long position) throws IOException {
+        ResetFileStreamPosition();
+        fileStream_.skip(position);
+        sentenceStartPos_ = position;
+        sentenceEndPos_ = position;
+    }
+
+
+    private void ResetFileStreamPosition() throws IOException {
+        rawStream_.reset();
+        fileStream_ = new InputStreamReader(rawStream_, "UTF-8");
+        sentenceStartPos_ = 0;
+        sentenceEndPos_ = 0;
+    }
+
+
+    private long sentenceStartPos_ = 0; // offsets in characters
+    private long sentenceEndPos_ = 0;
+    private InputStream rawStream_;
+    private String fileName_;
+    private InputStreamReader fileStream_;
+    private String filesDir_;
+    private SizedStack<Long> rewindPoints_;
+
+    private final char[] sentenceDelimiters_ = {'.', ';'};
 }

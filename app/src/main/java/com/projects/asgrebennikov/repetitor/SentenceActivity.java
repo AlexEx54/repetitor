@@ -1,8 +1,5 @@
 package com.projects.asgrebennikov.repetitor;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +21,6 @@ import backend.DatabaseImpl;
 import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
-import backend.TextSupplierImpl_fix;
 import backend.Vocabulary;
 import backend.Word;
 import backend.YandexVocabularyImpl;
@@ -83,8 +79,8 @@ public class SentenceActivity extends AppCompatActivity {
                         "raw", getPackageName()));
 
         try {
-            rusTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
-            engTextSupplier_ = new TextSupplierImpl_fix(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
 
 //            rusTextSupplier_.SaveCursor();
 //            engTextSupplier_.SaveCursor();
