@@ -65,10 +65,12 @@ public class SentenceActivity extends AppCompatActivity {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((Vector<Word> words) -> {
+
                             item.setTranslations(words);
                             item.setFolded(!item.isFolded());
                             adapter.notifyDataSetChanged();
                             SaveWordToDb(item.getWord(), item.getTranslateDirection());
+
                         }, Throwable::printStackTrace);
             }
 
@@ -125,26 +127,28 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                TextSupplier currentSupplier = null;
-
-                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
-                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
-                    currentSupplier = engTextSupplier_;
-                } else {
-                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
-                    currentSupplier = rusTextSupplier_;
-                }
-
-                Sentence sentence = currentSupplier.GetNextSentence();
-                currentSupplier.SaveCursor();
-
-                TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-                textView.setText(sentence.AsString());
-                Vector<Word> words = sentence.GetWords();
-                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
-                wordsList_.clear();
-                wordsList_.addAll(ToWordListItems(words, currentDirection_));
-                adapter.notifyDataSetChanged();
+                setContentView(R.layout.learning_words);
+//
+//                TextSupplier currentSupplier = null;
+//
+//                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
+//                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
+//                    currentSupplier = engTextSupplier_;
+//                } else {
+//                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+//                    currentSupplier = rusTextSupplier_;
+//                }
+//
+//                Sentence sentence = currentSupplier.GetNextSentence();
+//                currentSupplier.SaveCursor();
+//
+//                TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+//                textView.setText(sentence.AsString());
+//                Vector<Word> words = sentence.GetWords();
+//                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
+//                wordsList_.clear();
+//                wordsList_.addAll(ToWordListItems(words, currentDirection_));
+//                adapter.notifyDataSetChanged();
             }
         });
 
