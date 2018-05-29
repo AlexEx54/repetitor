@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minHeight="0dp"
     android:background="@color/color_black"
+    tools:context="com.projects.asgrebennikov.repetitor.LearningWordsActivity"
     android:keepScreenOn="true">
 
     <android.support.constraint.Guideline
@@ -43,10 +45,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="containig"
+        android:text="Nothing to learn :)"
         android:textColor="@android:color/white"
         android:visibility="visible"
         app:autoSizeTextType="uniform"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,19 +87,39 @@
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
 
-
-    <TextView
-        android:id="@+id/complementarySentenceTextView"
-        android:layout_width="368dp"
+    <ListView
+        android:id="@+id/lw_learningWordList"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="complementary"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10.0sp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/guideline3"
+        app:layout_constraintStart_toEndOf="@+id/guidelineV1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4" />
+
+
+
+    <TextView
+        android:id="@+id/complementarySentenceTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="- - -"
         android:textColor="@android:color/white"
         android:visibility="visible"
         app:autoSizeTextType="uniform"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

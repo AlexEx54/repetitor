@@ -1,5 +1,6 @@
 package com.projects.asgrebennikov.repetitor;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
@@ -116,7 +117,7 @@ public class SentenceActivity extends AppCompatActivity {
             currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
 
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-            textView.setText(currentSentence.AsString());
+//            textView.setText(currentSentence.AsString());
             Vector<Word> words = currentSentence.GetWords();
             wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
         } catch (Exception e) {
@@ -127,7 +128,10 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                setContentView(R.layout.learning_words);
+
+                Intent intent = new Intent(SentenceActivity.this, LearningWordsActivity.class);
+                startActivity(intent);
+
 //
 //                TextSupplier currentSupplier = null;
 //
