@@ -117,7 +117,7 @@ public class SentenceActivity extends AppCompatActivity {
             currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
 
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-//            textView.setText(currentSentence.AsString());
+            textView.setText(currentSentence.AsString());
             Vector<Word> words = currentSentence.GetWords();
             wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
         } catch (Exception e) {
