@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black"
+    android:keepScreenOn="true"
+    android:minHeight="0dp"
+    tools:context="com.projects.asgrebennikov.repetitor.MainActivity"
+    tools:layout_editor_absoluteY="0dp">
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/main_h_center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/main_v_guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/main_v_guideline_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <Button
+        android:id="@+id/startPracticeButton"
+        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="0dp"
+        android:background="@color/color_black"
+        android:textColor="@color/color_white"
+        android:textStyle="bold"
+        android:text="Practice"
+        app:layout_constraintBottom_toTopOf="@+id/main_h_center_guideline"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+
+    <Button
+        android:id="@+id/startLearningButton"
+        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="0dp"
+        android:text="Learning"
+        android:textStyle="bold"
+        android:background="@color/color_black"
+        android:textColor="@color/color_white"
+        app:layout_constraintTop_toBottomOf="@+id/main_h_center_guideline"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+
+</android.support.constraint.ConstraintLayout>
