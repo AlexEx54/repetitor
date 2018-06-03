@@ -134,16 +134,25 @@ public class SentenceActivity extends AppCompatActivity {
 
 
                 TextSupplier currentSupplier = null;
+                TextSupplier complementarySupplier = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
                     currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
                     currentSupplier = engTextSupplier_;
+                    complementarySupplier = rusTextSupplier_;
                 } else {
                     currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
                     currentSupplier = rusTextSupplier_;
+                    complementarySupplier = engTextSupplier_;
                 }
 
                 Sentence sentence = currentSupplier.GetNextSentence();
+                complementarySupplier.GetNextSentence();
+
+                currentSupplier.SaveCursor();
+                complementarySupplier.SaveCursor();
+
+                complementarySupplier.GetPrevSentence(); // rewind
 
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
                 textView.setText(sentence.AsString());
