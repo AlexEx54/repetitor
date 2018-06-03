@@ -129,30 +129,29 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public synchronized void onClick(View v) {
 
-                Intent intent = new Intent(SentenceActivity.this, LearningWordsActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(SentenceActivity.this, LearningWordsActivity.class);
+//                startActivity(intent);
 
-//
-//                TextSupplier currentSupplier = null;
-//
-//                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
-//                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
-//                    currentSupplier = engTextSupplier_;
-//                } else {
-//                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
-//                    currentSupplier = rusTextSupplier_;
-//                }
-//
-//                Sentence sentence = currentSupplier.GetNextSentence();
-//                currentSupplier.SaveCursor();
-//
-//                TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-//                textView.setText(sentence.AsString());
-//                Vector<Word> words = sentence.GetWords();
-//                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
-//                wordsList_.clear();
-//                wordsList_.addAll(ToWordListItems(words, currentDirection_));
-//                adapter.notifyDataSetChanged();
+
+                TextSupplier currentSupplier = null;
+
+                if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
+                    currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
+                    currentSupplier = engTextSupplier_;
+                } else {
+                    currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+                    currentSupplier = rusTextSupplier_;
+                }
+
+                Sentence sentence = currentSupplier.GetNextSentence();
+
+                TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+                textView.setText(sentence.AsString());
+                Vector<Word> words = sentence.GetWords();
+                ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
+                wordsList_.clear();
+                wordsList_.addAll(ToWordListItems(words, currentDirection_));
+                adapter.notifyDataSetChanged();
             }
         });
 

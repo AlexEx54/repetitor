@@ -61,6 +61,9 @@ public class LearningWordsActivity extends AppCompatActivity {
         TextView containigTextView = (TextView) findViewById(R.id.containingSentenceTextView);
         containigTextView.setText(wordToLearn.containingSentence.AsString());
 
+        TextView complementaryTextView = (TextView) findViewById(R.id.complementarySentenceTextView);
+        complementaryTextView.setText("- - -");
+
         WordListItem listItem = new WordListItem(wordToLearn.word, wordToLearn.translateDirection);
         learningWord_.clear();
         learningWord_.add(listItem);
