@@ -127,11 +127,12 @@ public class DatabaseImpl implements Database {
 
     private void CreateLearningWordsTable() {
         db_.execSQL("CREATE TABLE learning_words (" +
-                    "timestamp INTEGER NOT NULL PRIMARY KEY," +
+                    "timestamp INTEGER NOT NULL," +
                     "word TEXT NOT NULL," +
                     "containing_sentence TEXT," +
                     "complementary_sentence TEXT," +
-                    "translation_direction TEXT NOT NULL)");
+                    "translation_direction TEXT NOT NULL," +
+                "PRIMARY KEY(word, containing_sentence));");
     }
 
     private SQLiteDatabase db_ = null;

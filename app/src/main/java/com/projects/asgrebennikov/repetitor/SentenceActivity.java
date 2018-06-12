@@ -128,11 +128,6 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-
-//                Intent intent = new Intent(SentenceActivity.this, LearningWordsActivity.class);
-//                startActivity(intent);
-
-
                 TextSupplier currentSupplier = null;
                 TextSupplier complementarySupplier = null;
 
