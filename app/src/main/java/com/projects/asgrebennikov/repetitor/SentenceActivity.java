@@ -1,5 +1,6 @@
 package com.projects.asgrebennikov.repetitor;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
@@ -33,17 +34,68 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SentenceActivity extends AppCompatActivity {
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_sentence);
-
         wordsList_ = new ArrayList<WordListItem>();
+
+        SetWordListViewHandlers();
+        SetNextButtonHandlers();
+        SetTextViewHandlers();
+
+        try {
+            InputStream rus_stream = getResources().openRawResource(
+                    getResources().getIdentifier("russian_text",
+                            "raw", getPackageName()));
+            InputStream eng_stream = getResources().openRawResource(
+                    getResources().getIdentifier("english_text",
+                            "raw", getPackageName()));
+
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
+
+//            rusTextSupplier_.SaveCursor();
+//            engTextSupplier_.SaveCursor();
+
+            rusTextSupplier_.LoadCursor();
+            engTextSupplier_.LoadCursor();
+
+            Sentence currentSentence = rusTextSupplier_.GetNextSentence();
+            currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
+
+            TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+            textView.setText(currentSentence.AsString());
+            Vector<Word> words = currentSentence.GetWords();
+            wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
+
+            db_ = new DatabaseImpl();
+            db_.Open(getFilesDir().toString(),"1.0.0");
+        }
+        catch (Exception e) {
+            finish();
+        }
+    }
+
+
+    private Vector<WordListItem> ToWordListItems(Vector<Word> words,
+                                                 Vocabulary.TranslateDirection translateDirection) {
+        Vector<WordListItem> result = new Vector<WordListItem>();
+
+        for (Word word: words) {
+            result.add(new WordListItem(word, translateDirection));
+        }
+
+        return result;
+    }
+
+
+    private void SetWordListViewHandlers() {
         ListView lv = (ListView) findViewById(R.id.wordsListView);
         ArrayAdapter<WordListItem> adapter = new WordsArrayAdapter<WordListItem>(this,
-                                                                      android.R.layout.simple_list_item_1,
-                                                                      wordsList_);
+                android.R.layout.simple_list_item_1,
+                wordsList_);
         lv.setAdapter(adapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,35 +147,10 @@ public class SentenceActivity extends AppCompatActivity {
                 db_.SaveWord(wordContext);
             }
         });
+    }
 
-        InputStream rus_stream = getResources().openRawResource(
-                getResources().getIdentifier("russian_text",
-                        "raw", getPackageName()));
-        InputStream eng_stream = getResources().openRawResource(
-                getResources().getIdentifier("english_text",
-                        "raw", getPackageName()));
 
-        try {
-            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
-            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
-
-//            rusTextSupplier_.SaveCursor();
-//            engTextSupplier_.SaveCursor();
-
-            rusTextSupplier_.LoadCursor();
-            engTextSupplier_.LoadCursor();
-
-            Sentence currentSentence = rusTextSupplier_.GetNextSentence();
-            currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
-
-            TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-            textView.setText(currentSentence.AsString());
-            Vector<Word> words = currentSentence.GetWords();
-            wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
-        } catch (Exception e) {
-            finish();
-        }
-
+    private void SetNextButtonHandlers() {
         Button nextSentenceButton = (Button) findViewById(R.id.nextButton);
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -150,6 +177,8 @@ public class SentenceActivity extends AppCompatActivity {
                 complementarySupplier.GetPrevSentence(); // rewind
 
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
+                ListView lv = (ListView) findViewById(R.id.wordsListView);
+
                 textView.setText(sentence.AsString());
                 Vector<Word> words = sentence.GetWords();
                 ArrayAdapter<Word> adapter = (ArrayAdapter<Word>) lv.getAdapter();
@@ -158,9 +187,15 @@ public class SentenceActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
 
+
+    private void SetTextViewHandlers() {
         TextView textView = (TextView) findViewById(R.id.sentenceTextView);
         textView.setGravity(Gravity.CENTER);
+
+        ListView lv = (ListView) findViewById(R.id.wordsListView);
+
         textView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
@@ -192,7 +227,6 @@ public class SentenceActivity extends AppCompatActivity {
             @Override
             public void onSwipeRight() {
                 TextSupplier currentSupplier = null;
-
 
                 switch (currentDirection_) {
                     case RU_EN: {
@@ -233,22 +267,8 @@ public class SentenceActivity extends AppCompatActivity {
             }
 
         });
-
-        db_ = new DatabaseImpl();
-        db_.Open(getFilesDir().toString(),"1.0.0");
     }
 
-
-    private Vector<WordListItem> ToWordListItems(Vector<Word> words,
-                                                 Vocabulary.TranslateDirection translateDirection) {
-        Vector<WordListItem> result = new Vector<WordListItem>();
-
-        for (Word word: words) {
-            result.add(new WordListItem(word, translateDirection));
-        }
-
-        return result;
-    }
 
     private void PassTextToGTranslateApp() {
         //                Intent intent = new Intent();
@@ -268,11 +288,14 @@ public class SentenceActivity extends AppCompatActivity {
 //                startActivity(intent);
     }
 
+
     private TextSupplier rusTextSupplier_;
     private TextSupplier engTextSupplier_;
     private ArrayList<WordListItem> wordsList_;
 
     private Vocabulary.TranslateDirection currentDirection_;
+    private Sentence rusSentence_;
+    private Sentence engSentence_;
     private Database db_;
 
 } // class SentenceActivity
