@@ -62,12 +62,14 @@ public class SentenceActivity extends AppCompatActivity {
             rusTextSupplier_.LoadCursor();
             engTextSupplier_.LoadCursor();
 
-            Sentence currentSentence = rusTextSupplier_.GetNextSentence();
+            rusSentence_ = rusTextSupplier_.GetNextSentence();
+            engSentence_ = engTextSupplier_.GetNextSentence();
+
             currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
 
             TextView textView = (TextView) findViewById(R.id.sentenceTextView);
-            textView.setText(currentSentence.AsString());
-            Vector<Word> words = currentSentence.GetWords();
+            textView.setText(rusSentence_.AsString());
+            Vector<Word> words = rusSentence_.GetWords();
             wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
 
             db_ = new DatabaseImpl();
@@ -135,13 +137,11 @@ public class SentenceActivity extends AppCompatActivity {
                 wordContext.translateDirection = translateDirection;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
-                    wordContext.containingSentence = rusTextSupplier_.GetCurrentSentence();
-                    wordContext.complementarySentence = engTextSupplier_.GetNextSentence();
-                    engTextSupplier_.GetPrevSentence(); // rewind back
+                    wordContext.containingSentence = rusSentence_;
+                    wordContext.complementarySentence = engSentence_;
                 } else {
-                    wordContext.containingSentence = engTextSupplier_.GetCurrentSentence();
-                    wordContext.complementarySentence = rusTextSupplier_.GetCurrentSentence();
-                    rusTextSupplier_.GetPrevSentence(); // rewind back
+                    wordContext.containingSentence = engSentence_;
+                    wordContext.complementarySentence = rusSentence_;
                 }
 
                 db_.SaveWord(wordContext);
@@ -155,26 +155,20 @@ public class SentenceActivity extends AppCompatActivity {
         nextSentenceButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                TextSupplier currentSupplier = null;
-                TextSupplier complementarySupplier = null;
+                Sentence sentence = null;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
                     currentDirection_ = Vocabulary.TranslateDirection.EN_RU;
-                    currentSupplier = engTextSupplier_;
-                    complementarySupplier = rusTextSupplier_;
+                    sentence = engSentence_;
                 } else {
+                    engSentence_ = engTextSupplier_.GetNextSentence();
+                    rusSentence_ = rusTextSupplier_.GetNextSentence();
                     currentDirection_ = Vocabulary.TranslateDirection.RU_EN;
-                    currentSupplier = rusTextSupplier_;
-                    complementarySupplier = engTextSupplier_;
+                    sentence = rusSentence_;
                 }
 
-                Sentence sentence = currentSupplier.GetNextSentence();
-                complementarySupplier.GetNextSentence();
-
-                currentSupplier.SaveCursor();
-                complementarySupplier.SaveCursor();
-
-                complementarySupplier.GetPrevSentence(); // rewind
+                rusTextSupplier_.SaveCursor();
+                engTextSupplier_.SaveCursor();
 
                 TextView textView = (TextView) findViewById(R.id.sentenceTextView);
                 ListView lv = (ListView) findViewById(R.id.wordsListView);
