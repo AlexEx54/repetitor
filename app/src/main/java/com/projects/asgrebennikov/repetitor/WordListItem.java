@@ -23,6 +23,7 @@ public class WordListItem {
         setTranslations(null);
         setFolded(true);
         translateDirection_ = translateDirection;
+        wordAppendix_ = new String();
     }
 
 
@@ -58,9 +59,14 @@ public class WordListItem {
         this.translateDirection_ = translateDirection;
     }
 
+    public void setWordAppendix(String appendix) {
+        wordAppendix_ = appendix;
+    }
+
     @Override
     public String toString() {
         String result = StringUtils.capitalize(word_.GetText());
+        result += wordAppendix_;
 
         if (!folded_ && (translations_ != null)) {
             result += "\n -------------------------- \n";
@@ -85,6 +91,7 @@ public class WordListItem {
     private Vector<Word> translations_;
     private boolean folded_;
     private Vocabulary.TranslateDirection translateDirection_;
+    private String wordAppendix_;
 
 
 }
