@@ -58,6 +58,7 @@ class TranslationProgressIndicationTask extends TimerTask {
 
     @Override
     public boolean cancel() {
+        System.out.println("cancel called!!!!!");
         item_.setWordAppendix(new String());
         notifyAdapter();
         return true;
@@ -169,8 +170,8 @@ public class SentenceActivity extends AppCompatActivity {
                     YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
                     Vector<Word> translations = vocabulary.Translate(item.getWord(), item.getTranslateDirection());
 
+                    timerTask.cancel();
                     timer.cancel();
-                    timer.purge();
 
                     return translations;
                 })
