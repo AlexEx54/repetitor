@@ -6,6 +6,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -93,6 +94,7 @@ public class SentenceActivity extends AppCompatActivity {
         SetWordListViewHandlers();
         SetNextButtonHandlers();
         SetTextViewHandlers();
+        SetTermsTextViewHandlers();
 
         try {
             InputStream rus_stream = getResources().openRawResource(
@@ -127,6 +129,12 @@ public class SentenceActivity extends AppCompatActivity {
         catch (Exception e) {
             finish();
         }
+    }
+
+    private void SetTermsTextViewHandlers() {
+        TextView terms_view = (TextView) findViewById(R.id.yandexTerms);
+        terms_view.setLinksClickable(true);
+        terms_view.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
 

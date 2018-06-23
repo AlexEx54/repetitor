@@ -2,6 +2,7 @@ package com.projects.asgrebennikov.repetitor;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,6 +43,7 @@ public class LearningWordsActivity extends AppCompatActivity {
         SetComplementarySentenceClickHandler();
         SetNextWordClickHandler();
         SetCompletedWordButtonHandler();
+        SetTermsTextViewHandlers();
 
         ShowNextWordToLearn(null);
     }
@@ -157,6 +159,13 @@ public class LearningWordsActivity extends AppCompatActivity {
                 ShowNextWordToLearn(currentWord_);
             }
         });
+    }
+
+
+    private void SetTermsTextViewHandlers() {
+        TextView terms_view = (TextView) findViewById(R.id.yandexTerms);
+        terms_view.setLinksClickable(true);
+        terms_view.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private ArrayList<WordListItem> learningWord_;

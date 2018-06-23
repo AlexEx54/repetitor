@@ -3,6 +3,7 @@ package com.projects.asgrebennikov.repetitor;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,6 @@ public class WordsArrayAdapter<T> extends ArrayAdapter<T> {
         textView.setTextColor(Color.WHITE);
         textView.setGravity(Gravity.CENTER);
 
-        ColorDrawable cd = (ColorDrawable) textView.getBackground();
         if (textView.getBackground() == null)
         {
             Random rand = new Random();
