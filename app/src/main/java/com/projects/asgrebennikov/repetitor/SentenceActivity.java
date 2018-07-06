@@ -96,16 +96,18 @@ public class SentenceActivity extends AppCompatActivity {
         SetTextViewHandlers();
         SetTermsTextViewHandlers();
 
+        Intent passedIntent = getIntent();
+        String englishText = passedIntent.getStringExtra("eng_text_name");
+        String russianText = passedIntent.getStringExtra("rus_text_name");
+
         try {
             InputStream rus_stream = getResources().openRawResource(
-                    getResources().getIdentifier("russian_text",
-                            "raw", getPackageName()));
+                    getResources().getIdentifier(russianText,"raw", getPackageName()));
             InputStream eng_stream = getResources().openRawResource(
-                    getResources().getIdentifier("english_text",
-                            "raw", getPackageName()));
+                    getResources().getIdentifier(englishText,"raw", getPackageName()));
 
-            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, "russian_text");
-            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, "english_text");
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, russianText);
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, englishText);
 
 //            rusTextSupplier_.SaveCursor();
 //            engTextSupplier_.SaveCursor();

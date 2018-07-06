@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         practiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SentenceActivity.class);
+                Intent intent = new Intent(MainActivity.this, BookSelectionActivity.class);
                 startActivity(intent);
             }
         });
