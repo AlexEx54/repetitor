@@ -45,7 +45,9 @@ public class TextSupplierImpl implements TextSupplier {
                 }
                 cursorIncrement++;
                 char char_ = (char) charAsInt;
-                if (IsSentenceDelimiter(char_)) {
+                if (IsSentenceDelimiter(char_) &&
+                    !SentenceEndsWithExceptionalSequence(sentenceStrBuilder.toString()))
+                {
                     break;
                 }
                 sentenceStrBuilder.append(char_);
@@ -176,6 +178,23 @@ public class TextSupplierImpl implements TextSupplier {
         fileStream_ = new InputStreamReader(rawStream_, "UTF-8");
         sentenceStartPos_ = 0;
         sentenceEndPos_ = 0;
+    }
+
+    private boolean SentenceEndsWithExceptionalSequence(String sentence) {
+        if (sentence.length() < 4) {
+            return true;
+        }
+
+        String lcSentence = sentence.toLowerCase();
+        if (lcSentence.endsWith(" mrs") ||
+            lcSentence.endsWith(" mr") ||
+            lcSentence.endsWith(" miss") ||
+            lcSentence.endsWith(" ms"))
+        {
+            return true;
+        }
+
+        return false;
     }
 
 
