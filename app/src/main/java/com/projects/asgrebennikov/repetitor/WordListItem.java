@@ -24,6 +24,7 @@ public class WordListItem {
         setFolded(true);
         translateDirection_ = translateDirection;
         wordAppendix_ = new String();
+        errorOccurred_ = false;
     }
 
 
@@ -51,6 +52,12 @@ public class WordListItem {
         this.folded_ = folded;
     }
 
+
+    public void setErrorOccurred(boolean value) {
+        errorOccurred_ = value;
+    }
+
+
     public Vocabulary.TranslateDirection getTranslateDirection() {
         return translateDirection_;
     }
@@ -68,8 +75,13 @@ public class WordListItem {
         String result = StringUtils.capitalize(word_.GetText());
         result += wordAppendix_;
 
-        if (!folded_ && (translations_ != null)) {
+        if (!folded_) {
             result += "\n -------------------------- \n";
+
+            if (errorOccurred_ || (translations_ == null)) {
+                result += "Error occurred :(";
+                return result;
+            }
 
             int DISPLAY_TRANSLATIONS_LIMIT = 3;
 
@@ -90,6 +102,7 @@ public class WordListItem {
     private Word word_;
     private Vector<Word> translations_;
     private boolean folded_;
+    private boolean errorOccurred_;
     private Vocabulary.TranslateDirection translateDirection_;
     private String wordAppendix_;
 

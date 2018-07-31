@@ -101,15 +101,26 @@ public class LearningWordsActivity extends AppCompatActivity {
                 Flowable.fromCallable(() -> {
                     YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
                     Vector<Word> translations = vocabulary.Translate(item.getWord(), item.getTranslateDirection());
+
+                    if (translations == null) {
+                        throw new Exception("Fuck!");
+                    }
+
                     return translations;
                 })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((Vector<Word> words) -> {
+                            item.setErrorOccurred(false);
                             item.setTranslations(words);
                             item.setFolded(!item.isFolded());
                             listAdapter_.notifyDataSetChanged();
-                        }, Throwable::printStackTrace);
+                        },
+                        (e) -> {
+                            item.setFolded(!item.isFolded());
+                            item.setErrorOccurred(true);
+                            listAdapter_.notifyDataSetChanged();
+                        });
             }
         });
     }

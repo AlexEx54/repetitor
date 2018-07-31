@@ -26,7 +26,7 @@ public class YandexVocabularyImpl implements Vocabulary {
             TranslationResult translationResult = ParseWordArticleXml(stream, word);
             result = TranslationResultAsList(translationResult);
         } catch (Exception e) {
-            return new Vector<Word>();
+            return null;
         }
 
         return result;

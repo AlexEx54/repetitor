@@ -2,6 +2,7 @@ package com.projects.asgrebennikov.repetitor;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
@@ -59,7 +60,6 @@ class TranslationProgressIndicationTask extends TimerTask {
 
     @Override
     public boolean cancel() {
-        System.out.println("cancel called!!!!!");
         item_.setWordAppendix(new String());
         notifyAdapter();
         return true;
@@ -183,18 +183,26 @@ public class SentenceActivity extends AppCompatActivity {
                     timerTask.cancel();
                     timer.cancel();
 
+                    if (translations == null)
+                        throw new Exception("FFFffffuuck");
+
                     return translations;
                 })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((Vector<Word> words) -> {
-
+                            item.setErrorOccurred(false);
                             item.setTranslations(words);
                             item.setFolded(!item.isFolded());
                             adapter.notifyDataSetChanged();
                             SaveWordToDb(item.getWord(), item.getTranslateDirection());
 
-                        }, Throwable::printStackTrace);
+                        },
+                        (e) -> {
+                            item.setFolded(!item.isFolded());
+                            item.setErrorOccurred(true);
+                            adapter.notifyDataSetChanged();
+                        });
             }
 
 
