@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.Vector;
 
 import backend.Database;
@@ -99,8 +100,16 @@ public class LearningWordsActivity extends AppCompatActivity {
                 }
 
                 Flowable.fromCallable(() -> {
+                    Timer timer = new Timer();
+                    TranslationProgressIndicationTask timerTask =
+                            new TranslationProgressIndicationTask(item, listAdapter_);
+                    timer.scheduleAtFixedRate(timerTask, 0, 500);
+
                     YandexVocabularyImpl vocabulary = new YandexVocabularyImpl();
                     Vector<Word> translations = vocabulary.Translate(item.getWord(), item.getTranslateDirection());
+
+                    timerTask.cancel();
+                    timer.cancel();
 
                     if (translations == null) {
                         throw new Exception("Fuck!");
