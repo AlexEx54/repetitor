@@ -29,7 +29,7 @@ public class DatabaseImpl implements Database {
 
         try {
             Cursor sql_result = db_.rawQuery("SELECT * from learning_words WHERE timestamp > " +
-                    Long.toString(prevWordTimestamp) + " LIMIT 1", null);
+                    Long.toString(prevWordTimestamp) + " ORDER BY timestamp LIMIT 1", null);
 
             sql_result.moveToFirst();
 
@@ -89,6 +89,11 @@ public class DatabaseImpl implements Database {
     }
 
 
+    public void SaveRewindPoint(String fileId, long cursorPos) {
+
+    }
+
+
     private String GetDatabaseVersion()
     {
         assert(db_ != null);
@@ -113,6 +118,7 @@ public class DatabaseImpl implements Database {
 
         CreateVersionTable(version);
         CreateLearningWordsTable();
+        CreateRewindPointsTable();
     }
 
 
@@ -132,7 +138,15 @@ public class DatabaseImpl implements Database {
                     "containing_sentence TEXT," +
                     "complementary_sentence TEXT," +
                     "translation_direction TEXT NOT NULL," +
-                "PRIMARY KEY(word, containing_sentence));");
+                    "PRIMARY KEY(word, containing_sentence));");
+    }
+
+
+    private void CreateRewindPointsTable() {
+        db_.execSQL("CREATE TABLE rewind_points (" +
+                    "file_id TEXT NOT NULL," +
+                    "cursor_pos INTEGER NOT NULL," +
+                    "PRIMARY KEY(file_id, cursor_pos));");
     }
 
     private SQLiteDatabase db_ = null;
