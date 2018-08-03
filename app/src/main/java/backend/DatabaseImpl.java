@@ -90,7 +90,26 @@ public class DatabaseImpl implements Database {
 
 
     public void SaveRewindPoint(String fileId, long cursorPos) {
+        assert(db_ != null);
+        assert(db_.isOpen());
 
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("file_id", fileId);
+        contentValues.put("cursor_pos", cursorPos);
+
+        db_.replaceOrThrow("rewind_points", null, contentValues);
+    }
+
+
+    public long GetRewindPointBefore(long beforePos) {
+        Cursor sql_result = db_.rawQuery("SELECT cursor_pos FROM rewind_points WHERE cursor_pos < " +
+                Long.toString(beforePos) + " ORDER BY cursor_pos LIMIT 1", null);
+
+        sql_result.moveToFirst();
+
+        long result = sql_result.getLong(sql_result.getColumnIndexOrThrow("cursor_pos"));
+
+        return result;
     }
 
 
@@ -147,6 +166,8 @@ public class DatabaseImpl implements Database {
                     "file_id TEXT NOT NULL," +
                     "cursor_pos INTEGER NOT NULL," +
                     "PRIMARY KEY(file_id, cursor_pos));");
+
+        db_.execSQL("CREATE INDEX IF NOT EXISTS rewind_cursor_idx ON rewind_points (cursor_pos);");
     }
 
     private SQLiteDatabase db_ = null;

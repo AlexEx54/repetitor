@@ -1,5 +1,7 @@
 package backend;
 
+import android.provider.ContactsContract;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.BufferedReader;
@@ -10,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import backend.Database;
 
 import utils.SizedStack;
 
@@ -21,12 +24,14 @@ public class TextSupplierImpl implements TextSupplier {
 
     public TextSupplierImpl(String filesDir,
                             InputStream fileStream,
-                            String fileName) throws IOException {
+                            String fileName,
+                            Database db) throws IOException {
         fileName_ = fileName;
         rawStream_ = fileStream;
         fileStream_ = new InputStreamReader(fileStream, "UTF-8");
         filesDir_ = filesDir;
         rewindPoints_ = new SizedStack<Long>(30);
+        db_ = db;
 
         assert fileStream_.ready();
     }
@@ -206,6 +211,7 @@ public class TextSupplierImpl implements TextSupplier {
     private String filesDir_;
     private SizedStack<Long> rewindPoints_;
     private Sentence currentSentence_;
+    private Database db_;
 
     private final char[] sentenceDelimiters_ = {'.', ';'};
 }

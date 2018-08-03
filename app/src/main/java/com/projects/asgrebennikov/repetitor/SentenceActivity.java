@@ -56,13 +56,16 @@ public class SentenceActivity extends AppCompatActivity {
         String russianText = passedIntent.getStringExtra("rus_text_name");
 
         try {
+            db_ = new DatabaseImpl();
+            db_.Open(getFilesDir().toString(),"1.0.0");
+
             InputStream rus_stream = getResources().openRawResource(
                     getResources().getIdentifier(russianText,"raw", getPackageName()));
             InputStream eng_stream = getResources().openRawResource(
                     getResources().getIdentifier(englishText,"raw", getPackageName()));
 
-            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, russianText);
-            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, englishText);
+            rusTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), rus_stream, russianText, db_);
+            engTextSupplier_ = new TextSupplierImpl(getFilesDir().getAbsolutePath(), eng_stream, englishText, db_);
 
 //            rusTextSupplier_.SaveCursor();
 //            engTextSupplier_.SaveCursor();
@@ -79,9 +82,6 @@ public class SentenceActivity extends AppCompatActivity {
             textView.setText(rusSentence_.AsString());
             Vector<Word> words = rusSentence_.GetWords();
             wordsList_.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN));
-
-            db_ = new DatabaseImpl();
-            db_.Open(getFilesDir().toString(),"1.0.0");
         }
         catch (Exception e) {
             finish();

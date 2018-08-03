@@ -12,4 +12,6 @@ public interface Database {
     public WordContext GetNextWord(@Nullable WordContext prevWord);
     public void SaveWord(WordContext wordContext);
     public void RemoveWord(WordContext wordContext);
+    public void SaveRewindPoint(String fileId, long cursorPos);
+    public long GetRewindPointBefore(long beforePos);
 }
