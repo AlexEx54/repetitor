@@ -30,7 +30,6 @@ public class TextSupplierImpl implements TextSupplier {
         rawStream_ = fileStream;
         fileStream_ = new InputStreamReader(fileStream, "UTF-8");
         filesDir_ = filesDir;
-        rewindPoints_ = new SizedStack<Long>(30);
         db_ = db;
 
         assert fileStream_.ready();
@@ -70,7 +69,7 @@ public class TextSupplierImpl implements TextSupplier {
             return GetNextSentence();
         }
 
-        rewindPoints_.push(sentenceStartPos_);
+        db_.SaveRewindPoint(fileName_, sentenceStartPos_);
 
         sentenceAsStr = sentenceAsStr.replaceAll("(\\r|\\n)", " ");
 
@@ -80,21 +79,9 @@ public class TextSupplierImpl implements TextSupplier {
 
 
     public Sentence GetPrevSentence() {
-        if (rewindPoints_.empty()) {
-            return null;
-        }
-
         try {
-            rewindPoints_.pop();
-
-            long prevSentencePos = 0;
-            if (rewindPoints_.empty()) {
-                prevSentencePos = 0;
-            } else {
-                prevSentencePos = rewindPoints_.pop();
-            }
-
-            SeekToPosition(prevSentencePos);
+            long rewind_point = db_.GetRewindPointBefore(sentenceStartPos_);
+            SeekToPosition(rewind_point);
         } catch (Exception e) {
             return null;
         }
@@ -128,7 +115,6 @@ public class TextSupplierImpl implements TextSupplier {
     public boolean LoadCursor() {
         try {
             long loadedCursor = LoadCursorValue();
-            FillUpRewindPoints(loadedCursor);
             SeekToPosition(loadedCursor);
         } catch (Exception e) {
             return false;
@@ -152,21 +138,6 @@ public class TextSupplierImpl implements TextSupplier {
         }
 
         return 0;
-    }
-
-    // fills points up to topPosition
-    private void FillUpRewindPoints(long topPosition) throws IOException {
-        ResetFileStreamPosition();
-
-        while (sentenceEndPos_ < topPosition) {
-            // pushes rewind points on every GetNextSentence
-            Sentence readSentence = GetNextSentence();
-            if (readSentence == null) {
-                break;
-            }
-        }
-
-        ResetFileStreamPosition();
     }
 
 
@@ -209,7 +180,6 @@ public class TextSupplierImpl implements TextSupplier {
     private String fileName_;
     private InputStreamReader fileStream_;
     private String filesDir_;
-    private SizedStack<Long> rewindPoints_;
     private Sentence currentSentence_;
     private Database db_;
 

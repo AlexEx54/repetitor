@@ -266,6 +266,11 @@ public class SentenceActivity extends AppCompatActivity {
 
                 Sentence currentSentence = null;
                 currentSentence = currentSupplier.GetPrevSentence();
+
+                if (currentSentence == null) {
+                    return;
+                }
+
                 currentSupplier.SaveCursor();
 
                 textView.setText(currentSentence.AsString());
