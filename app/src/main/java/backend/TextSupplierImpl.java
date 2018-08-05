@@ -80,7 +80,7 @@ public class TextSupplierImpl implements TextSupplier {
 
     public Sentence GetPrevSentence() {
         try {
-            long rewind_point = db_.GetRewindPointBefore(sentenceStartPos_);
+            long rewind_point = db_.GetRewindPointBefore(fileName_, sentenceStartPos_);
             SeekToPosition(rewind_point);
         } catch (Exception e) {
             return null;

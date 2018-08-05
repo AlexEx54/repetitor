@@ -101,9 +101,10 @@ public class DatabaseImpl implements Database {
     }
 
 
-    public long GetRewindPointBefore(long beforePos) {
+    public long GetRewindPointBefore(String fileId, long beforePos) {
         Cursor sql_result = db_.rawQuery("SELECT cursor_pos FROM rewind_points WHERE cursor_pos < " +
-                Long.toString(beforePos) + " ORDER BY cursor_pos DESC LIMIT 1", null);
+                Long.toString(beforePos) + " AND file_id = '" + fileId +
+                "' ORDER BY cursor_pos DESC LIMIT 1", null);
 
         sql_result.moveToFirst();
 

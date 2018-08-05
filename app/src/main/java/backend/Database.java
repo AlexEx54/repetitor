@@ -13,5 +13,5 @@ public interface Database {
     public void SaveWord(WordContext wordContext);
     public void RemoveWord(WordContext wordContext);
     public void SaveRewindPoint(String fileId, long cursorPos);
-    public long GetRewindPointBefore(long beforePos);
+    public long GetRewindPointBefore(String fileId, long beforePos);
 }
