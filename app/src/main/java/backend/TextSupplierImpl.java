@@ -124,6 +124,27 @@ public class TextSupplierImpl implements TextSupplier {
     }
 
 
+    public boolean SetCursorPos(long pos) {
+        try {
+            SeekToPosition(pos);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public long GetCursorPos() {
+        return sentenceStartPos_;
+    }
+
+
+    public String GetFileId() {
+        return fileName_;
+    }
+
+
     private boolean IsSentenceDelimiter(char c) {
         return ArrayUtils.contains(sentenceDelimiters_, c);
     }

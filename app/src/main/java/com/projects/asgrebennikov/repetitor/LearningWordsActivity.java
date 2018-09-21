@@ -10,12 +10,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.Vector;
 
 import backend.Database;
 import backend.DatabaseImpl;
+import backend.TextSupplier;
+import backend.TextSupplierImpl;
 import backend.Word;
 import backend.WordContext;
 import backend.YandexVocabularyImpl;
@@ -51,28 +54,54 @@ public class LearningWordsActivity extends AppCompatActivity {
 
 
     private void ShowNextWordToLearn(WordContext prevWord) {
-        WordContext wordToLearn = db_.GetNextWord(prevWord);
+        try {
 
-        if ((wordToLearn == null) ||
-            (wordToLearn.containingSentence == null) ||
-            (wordToLearn.word == null)) {
 
-            SetNothingToLearnView();
-            return;
+            WordContext wordToLearn = db_.GetNextWord(prevWord);
+
+            if ((wordToLearn == null) ||
+                    (wordToLearn.word == null)) {
+
+                SetNothingToLearnView();
+                return;
+            }
+
+            InputStream primary_sentence_stream = getResources().openRawResource(
+                    getResources().getIdentifier(wordToLearn.primarySentenceFileId, "raw", getPackageName()));
+            containingSentenceSupplier = new TextSupplierImpl(
+                    getFilesDir().getAbsolutePath(),
+                    primary_sentence_stream,
+                    wordToLearn.primarySentenceFileId,
+                    db_);
+            InputStream complementary_sentence_stream = getResources().openRawResource(
+                    getResources().getIdentifier(wordToLearn.complementarySentenceFileId, "raw", getPackageName()));
+            complementarySentenceSupplier = new TextSupplierImpl(
+                    getFilesDir().getAbsolutePath(),
+                    complementary_sentence_stream,
+                    wordToLearn.complementarySentenceFileId,
+                    db_);
+
+            containingSentenceSupplier.SetCursorPos(wordToLearn.primarySentenceCursorPos);
+            complementarySentenceSupplier.SetCursorPos(wordToLearn.complementarySentenceCursorPos);
+
+            complementarySentenceSupplier.GetNextSentence();
+
+            TextView containigTextView = (TextView) findViewById(R.id.containingSentenceTextView);
+            containigTextView.setText(containingSentenceSupplier.GetNextSentence().AsString());
+
+            TextView complementaryTextView = (TextView) findViewById(R.id.complementarySentenceTextView);
+            complementaryTextView.setText("- - -");
+
+            WordListItem listItem = new WordListItem(wordToLearn.word, wordToLearn.translateDirection);
+            learningWord_.clear();
+            learningWord_.add(listItem);
+            listAdapter_.notifyDataSetChanged();
+
+            currentWord_ = wordToLearn;
+        } catch( Exception e )
+        {
+            return; // todo: show toast or something
         }
-
-        TextView containigTextView = (TextView) findViewById(R.id.containingSentenceTextView);
-        containigTextView.setText(wordToLearn.containingSentence.AsString());
-
-        TextView complementaryTextView = (TextView) findViewById(R.id.complementarySentenceTextView);
-        complementaryTextView.setText("- - -");
-
-        WordListItem listItem = new WordListItem(wordToLearn.word, wordToLearn.translateDirection);
-        learningWord_.clear();
-        learningWord_.add(listItem);
-        listAdapter_.notifyDataSetChanged();
-
-        currentWord_ = wordToLearn;
     }
 
 
@@ -141,13 +170,11 @@ public class LearningWordsActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                if ((currentWord_ == null) ||
-                    (currentWord_.complementarySentence == null)) {
-
+                if ((currentWord_ == null) || complementarySentenceSupplier == null) {
                     return;
                 }
 
-                textView.setText(currentWord_.complementarySentence.AsString());
+                textView.setText(complementarySentenceSupplier.GetCurrentSentence().AsString());
             }
         });
     }
@@ -192,4 +219,6 @@ public class LearningWordsActivity extends AppCompatActivity {
     private ArrayAdapter<WordListItem> listAdapter_;
     private WordContext currentWord_;
     private Database db_;
+    private TextSupplier containingSentenceSupplier;
+    private TextSupplier complementarySentenceSupplier;
 }

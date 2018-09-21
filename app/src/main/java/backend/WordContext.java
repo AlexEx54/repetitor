@@ -7,7 +7,9 @@ package backend;
 public class WordContext {
     public long timestamp;
     public Word word;
-    public Sentence containingSentence;
-    public Sentence complementarySentence;
+    public String primarySentenceFileId;
+    public long primarySentenceCursorPos; // in charactes
+    public String complementarySentenceFileId;
+    public long complementarySentenceCursorPos; // in characters
     public Vocabulary.TranslateDirection translateDirection;
 }

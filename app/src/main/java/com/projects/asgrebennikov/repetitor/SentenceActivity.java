@@ -161,18 +161,22 @@ public class SentenceActivity extends AppCompatActivity {
             }
 
 
-            private void SaveWordToDb(Word word, Vocabulary.TranslateDirection translateDirection) {
+            private void SaveWordToDb(Word word, Vocabulary.TranslateDirection translateDirection) throws Exception {
                 WordContext wordContext = new WordContext();
                 wordContext.timestamp = System.currentTimeMillis();
                 wordContext.word = word;
                 wordContext.translateDirection = translateDirection;
 
                 if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
-                    wordContext.containingSentence = rusSentence_;
-                    wordContext.complementarySentence = engSentence_;
+                    wordContext.primarySentenceFileId = rusTextSupplier_.GetFileId();
+                    wordContext.primarySentenceCursorPos = rusTextSupplier_.GetCursorPos();
+                    wordContext.complementarySentenceFileId = engTextSupplier_.GetFileId();
+                    wordContext.complementarySentenceCursorPos = engTextSupplier_.GetCursorPos();
                 } else {
-                    wordContext.containingSentence = engSentence_;
-                    wordContext.complementarySentence = rusSentence_;
+                    wordContext.primarySentenceFileId = engTextSupplier_.GetFileId();
+                    wordContext.primarySentenceCursorPos = engTextSupplier_.GetCursorPos();
+                    wordContext.complementarySentenceFileId = rusTextSupplier_.GetFileId();
+                    wordContext.complementarySentenceCursorPos = rusTextSupplier_.GetCursorPos();
                 }
 
                 db_.SaveWord(wordContext);

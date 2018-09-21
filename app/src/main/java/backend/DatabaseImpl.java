@@ -35,18 +35,24 @@ public class DatabaseImpl implements Database {
 
             long timestamp = sql_result.getLong(sql_result.getColumnIndexOrThrow("timestamp"));
             String word = sql_result.getString(sql_result.getColumnIndexOrThrow("word"));
-            String containing_sentence =
-                    sql_result.getString(sql_result.getColumnIndexOrThrow("containing_sentence"));
-            String complementary_sentence =
-                    sql_result.getString(sql_result.getColumnIndexOrThrow("complementary_sentence"));
+            String primary_sentence_file_id =
+                    sql_result.getString(sql_result.getColumnIndexOrThrow("primary_sentence_file_id"));
+            long primary_sentence_cursor_pos =
+                    sql_result.getLong(sql_result.getColumnIndexOrThrow("primary_sentence_cursor_pos"));
+            String complementary_sentence_file_id =
+                    sql_result.getString(sql_result.getColumnIndexOrThrow("complementary_sentence_file_id"));
+            long complementary_sentence_cursor_pos =
+                    sql_result.getLong(sql_result.getColumnIndexOrThrow("complementary_sentence_cursor_pos"));
             String translation_direction_str =
                     sql_result.getString(sql_result.getColumnIndexOrThrow("translation_direction"));
 
             WordContext result = new WordContext();
             result.timestamp = timestamp;
             result.word = new Word(word);
-            result.containingSentence = new SentenceImpl(containing_sentence);
-            result.complementarySentence = new SentenceImpl(complementary_sentence);
+            result.primarySentenceFileId = primary_sentence_file_id;
+            result.primarySentenceCursorPos = primary_sentence_cursor_pos;
+            result.complementarySentenceFileId = complementary_sentence_file_id;
+            result.complementarySentenceCursorPos = complementary_sentence_cursor_pos;
             result.translateDirection = Vocabulary.TranslateDirection.valueOf(translation_direction_str);
 
             return result;
@@ -56,24 +62,21 @@ public class DatabaseImpl implements Database {
         }
     }
 
-    public void SaveWord(WordContext wordContext) {
+    public void SaveWord(WordContext wordContext) throws Exception {
         assert(db_ != null);
         assert(db_.isOpen());
 
-        if ((wordContext.word == null) ||
-            (wordContext.containingSentence == null) ||
-            (wordContext.complementarySentence == null)) {
-
-            return;
+        if (wordContext.word == null) {
+            throw new Exception("SaveWord: passed null word to save");
         }
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("timestamp", wordContext.timestamp);
         contentValues.put("word", wordContext.word.GetText());
-        contentValues.put("containing_sentence", wordContext.containingSentence.AsString());
-        contentValues.put("complementary_sentence", wordContext.complementarySentence.AsString());
-
-        String s = wordContext.translateDirection.name();
+        contentValues.put("primary_sentence_file_id", wordContext.primarySentenceFileId);
+        contentValues.put("primary_sentence_cursor_pos", wordContext.primarySentenceCursorPos);
+        contentValues.put("complementary_sentence_file_id", wordContext.complementarySentenceFileId);
+        contentValues.put("complementary_sentence_cursor_pos", wordContext.complementarySentenceCursorPos);
         contentValues.put("translation_direction", wordContext.translateDirection.name());
 
         db_.replaceOrThrow("learning_words", null, contentValues);
@@ -155,10 +158,12 @@ public class DatabaseImpl implements Database {
         db_.execSQL("CREATE TABLE learning_words (" +
                     "timestamp INTEGER NOT NULL," +
                     "word TEXT NOT NULL," +
-                    "containing_sentence TEXT," +
-                    "complementary_sentence TEXT," +
+                    "primary_sentence_file_id TEXT," +
+                    "primary_sentence_cursor_pos BIGINT," +
+                    "complementary_sentence_file_id TEXT," +
+                    "complementary_sentence_cursor_pos BIGINT," +
                     "translation_direction TEXT NOT NULL," +
-                    "PRIMARY KEY(word, containing_sentence));");
+                    "PRIMARY KEY(word, primary_sentence_file_id, primary_sentence_cursor_pos));");
     }
 
 
