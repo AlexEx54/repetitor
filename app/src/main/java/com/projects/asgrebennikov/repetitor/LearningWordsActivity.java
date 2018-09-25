@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import backend.Database;
 import backend.DatabaseImpl;
+import backend.Sentence;
 import backend.TextSupplier;
 import backend.TextSupplierImpl;
 import backend.Word;
@@ -167,14 +168,48 @@ public class LearningWordsActivity extends AppCompatActivity {
     private void SetComplementarySentenceClickHandler() {
         TextView textView = (TextView) findViewById(R.id.complementarySentenceTextView);
 
-        textView.setOnClickListener(new View.OnClickListener() {
+        textView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
-            public synchronized void onClick(View v) {
+            public synchronized void onTouched() {
                 if ((currentWord_ == null) || complementarySentenceSupplier == null) {
                     return;
                 }
 
                 textView.setText(complementarySentenceSupplier.GetCurrentSentence().AsString());
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                if ((currentWord_ == null) ||
+                     complementarySentenceSupplier == null ||
+                     (textView.getText().toString().equalsIgnoreCase("- - -"))) {
+                    return;
+                }
+
+                Sentence nextSentence = complementarySentenceSupplier.GetNextSentence();
+                if (nextSentence == null)
+                {
+                    return;
+                }
+
+                textView.setText(nextSentence.AsString());
+            }
+
+            @Override
+            public void onSwipeRight() {
+                if ((currentWord_ == null) ||
+                        complementarySentenceSupplier == null ||
+                        (textView.getText().toString().equalsIgnoreCase("- - -"))) {
+                    return;
+                }
+
+                Sentence prevSentence = complementarySentenceSupplier.GetPrevSentence();
+                if (prevSentence == null)
+                {
+                    return;
+                }
+
+                textView.setText(prevSentence.AsString());
             }
         });
     }

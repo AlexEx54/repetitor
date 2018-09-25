@@ -299,7 +299,6 @@ public class SentenceActivity extends AppCompatActivity {
                 params.guidePercent = 0.2f;
                 guideLine.setLayoutParams(params);
             }
-
         });
     }
 
