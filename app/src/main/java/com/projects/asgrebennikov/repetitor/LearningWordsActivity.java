@@ -49,6 +49,7 @@ public class LearningWordsActivity extends AppCompatActivity {
         SetNextWordClickHandler();
         SetCompletedWordButtonHandler();
         SetTermsTextViewHandlers();
+        SetContainingSentenceClickHandler();
 
         ShowNextWordToLearn(null);
     }
@@ -204,6 +205,45 @@ public class LearningWordsActivity extends AppCompatActivity {
                 }
 
                 Sentence prevSentence = complementarySentenceSupplier.GetPrevSentence();
+                if (prevSentence == null)
+                {
+                    return;
+                }
+
+                textView.setText(prevSentence.AsString());
+            }
+        });
+    }
+
+
+    private void SetContainingSentenceClickHandler() {
+        TextView textView = (TextView) findViewById(R.id.containingSentenceTextView);
+
+        textView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                if ((currentWord_ == null) ||
+                        containingSentenceSupplier == null) {
+                    return;
+                }
+
+                Sentence nextSentence = containingSentenceSupplier.GetNextSentence();
+                if (nextSentence == null)
+                {
+                    return;
+                }
+
+                textView.setText(nextSentence.AsString());
+            }
+
+            @Override
+            public void onSwipeRight() {
+                if ((currentWord_ == null) ||
+                        containingSentenceSupplier == null) {
+                    return;
+                }
+
+                Sentence prevSentence = containingSentenceSupplier.GetPrevSentence();
                 if (prevSentence == null)
                 {
                     return;
