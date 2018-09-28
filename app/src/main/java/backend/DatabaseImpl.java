@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by as.grebennikov on 28.03.18.
@@ -17,6 +20,7 @@ public class DatabaseImpl implements Database {
         String dbVersion = GetDatabaseVersion();
         if (dbVersion == null || !dbVersion.equals(version))
         {
+            ClearDatabase();
             CreateDatabase(version);
         }
     }
@@ -142,6 +146,21 @@ public class DatabaseImpl implements Database {
         CreateVersionTable(version);
         CreateLearningWordsTable();
         CreateRewindPointsTable();
+    }
+
+
+    private void ClearDatabase() {
+        Cursor c = db_.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        List<String> tables = new ArrayList<>();
+
+        while (c.moveToNext()) {
+            tables.add(c.getString(0));
+        }
+
+        for (String table : tables) {
+            String dropQuery = "DROP TABLE IF EXISTS " + table;
+            db_.execSQL(dropQuery);
+        }
     }
 
 

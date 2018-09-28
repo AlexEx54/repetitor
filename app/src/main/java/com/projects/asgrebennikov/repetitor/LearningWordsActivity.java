@@ -35,7 +35,7 @@ public class LearningWordsActivity extends AppCompatActivity {
         setContentView(R.layout.learning_words);
 
         db_ = new DatabaseImpl();
-        db_.Open(getFilesDir().toString(),"1.0.0");
+        db_.Open(getFilesDir().toString(),"2.0.0");
 
         learningWord_ = new ArrayList<WordListItem>();
         ListView learningWordsList = (ListView) findViewById(R.id.lw_learningWordList);
