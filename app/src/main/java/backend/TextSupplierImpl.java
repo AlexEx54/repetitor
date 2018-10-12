@@ -1,9 +1,5 @@
 package backend;
 
-import android.provider.ContactsContract;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,9 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import backend.Database;
-
-import utils.SizedStack;
 
 /**
  * Created by as.grebennikov on 09.05.18.
@@ -49,8 +42,9 @@ public class TextSupplierImpl implements TextSupplier {
                 }
                 cursorIncrement++;
                 char char_ = (char) charAsInt;
-                if (IsSentenceDelimiter(char_) &&
-                    !SentenceEndsWithExceptionalSequence(sentenceStrBuilder.toString()))
+                String current_string = sentenceStrBuilder.toString();
+                if (IsSentenceEnded(current_string) &&
+                    !SentenceEndsWithExceptionalSequence(current_string))
                 {
                     break;
                 }
@@ -145,8 +139,18 @@ public class TextSupplierImpl implements TextSupplier {
     }
 
 
-    private boolean IsSentenceDelimiter(char c) {
-        return ArrayUtils.contains(sentenceDelimiters_, c);
+    private boolean IsSentenceEnded(String sentence) {
+        if (sentence.endsWith("...") ||
+            sentence.endsWith(";") ||
+            sentence.endsWith(".") ||
+            sentence.endsWith("?") ||
+            sentence.endsWith("!") ||
+            sentence.endsWith(":")    )
+        {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -203,6 +207,4 @@ public class TextSupplierImpl implements TextSupplier {
     private String filesDir_;
     private Sentence currentSentence_;
     private Database db_;
-
-    private final char[] sentenceDelimiters_ = {'.', ';'};
 }

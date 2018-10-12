@@ -57,7 +57,7 @@ public class SentenceActivity extends AppCompatActivity {
 
         try {
             db_ = new DatabaseImpl();
-            db_.Open(getFilesDir().toString(),"2.0.0");
+            db_.Open(getFilesDir().toString(),"3.0.0");
 
             InputStream rus_stream = getResources().openRawResource(
                     getResources().getIdentifier(russianText,"raw", getPackageName()));
