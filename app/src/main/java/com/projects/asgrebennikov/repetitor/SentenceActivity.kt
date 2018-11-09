@@ -246,17 +246,28 @@ class SentenceActivity : AppCompatActivity() {
         textView.gravity = Gravity.CENTER
 
         val tourGuide: TourGuide = TourGuide.create(this) {
-            pointer {}
+            pointer {
+                color { Color.parseColor("#FFFF0000") }
+            }
 
             toolTip {
-                title { "Welcome!" }
-                description { "Click on Get Started to begin..." }
+                title { "Привет!" }
+                description { "Немного объясним как здесь что :) Это предложение) Как бы ты сказал его на английком? Жми на этот текст " }
             }
 
             overlay {
                 backgroundColor { Color.parseColor("#99000000") }
             }
-        }.playOn(textView)
+        };
+
+        tourGuide.toolTip!!.setOnClickListener( object : View.OnClickListener {
+            override fun onClick(view: View) {
+                tourGuide.cleanUp();
+            }
+        });
+
+        tourGuide.playOn(textView)
+
 
         val lv = findViewById<View>(R.id.wordsListView) as ListView
 

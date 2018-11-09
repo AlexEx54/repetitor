@@ -120,6 +120,31 @@ public class DatabaseImpl implements Database {
         return result;
     }
 
+    @Override
+    public boolean IsShowedTooltip(String componentId, String tooltipId) {
+        assert(db_ != null);
+        assert(db_.isOpen());
+
+        Cursor sql_result = db_.rawQuery("SELECT tooltip_id FROM showed_tooltips WHERE component_id = " +
+                componentId + " AND tooltip_id = " + tooltipId +
+                " LIMIT 1", null);
+
+        return (sql_result.getCount() != 0);
+    }
+
+
+    @Override
+    public void SetTooltipAsShowed(String componentId, String tooltipId) {
+        assert(db_ != null);
+        assert(db_.isOpen());
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("component_id", componentId);
+        contentValues.put("tooltip_id", tooltipId);
+
+        db_.replaceOrThrow("showed_tooltips", null, contentValues);
+    }
+
 
     private String GetDatabaseVersion()
     {
@@ -146,6 +171,7 @@ public class DatabaseImpl implements Database {
         CreateVersionTable(version);
         CreateLearningWordsTable();
         CreateRewindPointsTable();
+        CreateShowedTooltipsTable();
     }
 
 
@@ -193,6 +219,14 @@ public class DatabaseImpl implements Database {
                     "PRIMARY KEY(file_id, cursor_pos));");
 
         db_.execSQL("CREATE INDEX IF NOT EXISTS rewind_cursor_idx ON rewind_points (cursor_pos);");
+    }
+
+
+    private void CreateShowedTooltipsTable() {
+        db_.execSQL("CREATE TABLE showed_tooltips (" +
+                    "component_id TEXT NOT NULL," +
+                    "tooltip_id TEXT NOT NULL," +
+                    "PRIMARY KEY(component_id, tooltip_id));");
     }
 
     private SQLiteDatabase db_ = null;
