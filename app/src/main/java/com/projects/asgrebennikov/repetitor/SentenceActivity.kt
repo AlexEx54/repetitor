@@ -49,6 +49,8 @@ class SentenceActivity : AppCompatActivity() {
     private var rusSentence_: Sentence? = null
     private var engSentence_: Sentence? = null
     private var db_: Database? = null
+    private var tourGuide_: TourGuide? = null
+    private var currentActiveTooltip_: String? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +98,76 @@ class SentenceActivity : AppCompatActivity() {
             finish()
         }
 
+        SetupTooltipAndHandlers();
     }
+
+
+    private fun SetupTooltipAndHandlers() {
+        val lv = findViewById<View>(R.id.wordsListView) as ListView
+
+        tourGuide_ = TourGuide.create(this) {
+            pointer {
+                color { Color.parseColor("#FFFF0000") }
+            }
+
+            toolTip {
+                title { "Привет!" }
+                description { "Немного объясним как здесь что :) Это предложение) Как бы ты сказал его на английком? Жми на этот текст " }
+                gravity { Gravity.TOP }
+            }
+
+            overlay {
+                backgroundColor { Color.parseColor("#99000000") }
+            }
+        };
+
+        tourGuide_!!.toolTip!!.setOnClickListener( object : View.OnClickListener {
+            override fun onClick(view: View) {
+                tourGuide_!!.cleanUp();
+                ProceedTooltip();
+            }
+        });
+
+        ProceedTooltip()
+    }
+
+
+    private fun ProceedTooltip() {
+        val component_name = "sentence_activity"
+
+        if (!currentActiveTooltip_.isNullOrEmpty()) {
+            db_!!.SetTooltipAsShowed(component_name, currentActiveTooltip_);
+        }
+
+        // 1. Explain sentence
+        if (!db_!!.IsShowedTooltip(component_name, "this_is_sentence")) {
+            val textView = findViewById<View>(R.id.sentenceTextView) as TextView
+
+            tourGuide_!!.apply {
+                toolTip {
+                    title { "Hello" }
+                    description { "Explains sentence text view" }
+                    gravity { Gravity.BOTTOM or Gravity.CENTER }
+                }
+            }.playOn(textView)
+            currentActiveTooltip_ = "this_is_sentence"
+        }
+
+        // 2. Explain words list
+        if (!db_!!.IsShowedTooltip(component_name, "this_is_words_list")) {
+            val listView = findViewById<View>(R.id.wordsListView) as ListView
+
+            tourGuide_!!.apply {
+                toolTip {
+                    title { "Words list header" }
+                    description { "Words list explained" }
+                    gravity { Gravity.BOTTOM or Gravity.CENTER }
+                }
+            }.playOn(listView)
+            currentActiveTooltip_ = "this_is_words_list"
+        }
+    }
+
 
     private fun SetTermsTextViewHandlers() {
         val terms_view = findViewById<View>(R.id.yandexTerms) as TextView
@@ -244,30 +315,6 @@ class SentenceActivity : AppCompatActivity() {
     private fun SetTextViewHandlers() {
         val textView = findViewById<View>(R.id.sentenceTextView) as TextView
         textView.gravity = Gravity.CENTER
-
-        val tourGuide: TourGuide = TourGuide.create(this) {
-            pointer {
-                color { Color.parseColor("#FFFF0000") }
-            }
-
-            toolTip {
-                title { "Привет!" }
-                description { "Немного объясним как здесь что :) Это предложение) Как бы ты сказал его на английком? Жми на этот текст " }
-            }
-
-            overlay {
-                backgroundColor { Color.parseColor("#99000000") }
-            }
-        };
-
-        tourGuide.toolTip!!.setOnClickListener( object : View.OnClickListener {
-            override fun onClick(view: View) {
-                tourGuide.cleanUp();
-            }
-        });
-
-        tourGuide.playOn(textView)
-
 
         val lv = findViewById<View>(R.id.wordsListView) as ListView
 
