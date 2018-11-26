@@ -125,9 +125,9 @@ public class DatabaseImpl implements Database {
         assert(db_ != null);
         assert(db_.isOpen());
 
-        Cursor sql_result = db_.rawQuery("SELECT tooltip_id FROM showed_tooltips WHERE component_id = " +
-                componentId + " AND tooltip_id = " + tooltipId +
-                " LIMIT 1", null);
+        Cursor sql_result = db_.rawQuery("SELECT tooltip_id FROM showed_tooltips WHERE component_id = '" +
+                componentId + "' AND tooltip_id = '" + tooltipId +
+                "' LIMIT 1", null);
 
         return (sql_result.getCount() != 0);
     }

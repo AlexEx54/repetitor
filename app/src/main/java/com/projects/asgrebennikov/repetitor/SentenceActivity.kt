@@ -69,7 +69,10 @@ class SentenceActivity : AppCompatActivity() {
 
         try {
             db_ = DatabaseImpl()
-            db_!!.Open(filesDir.toString(), "3.0.0")
+
+            val db_version = R.string.db_version
+
+            db_!!.Open(filesDir.toString(), getResources().getString(R.string.db_version));
 
             val rus_stream = resources.openRawResource(
                     resources.getIdentifier(russianText, "raw", packageName))
@@ -143,28 +146,24 @@ class SentenceActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_sentence")) {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
-            tourGuide_!!.apply {
-                toolTip {
-                    title { "Hello" }
-                    description { "Explains sentence text view" }
-                    gravity { Gravity.BOTTOM or Gravity.CENTER }
-                }
-            }.playOn(textView)
+            tourGuide_!!.toolTip!!.setTitle("Hello");
+            tourGuide_!!.toolTip!!.setDescription("Explains sentence text view")
+            tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
             currentActiveTooltip_ = "this_is_sentence"
+            tourGuide_!!.playOn(textView)
+            return
         }
 
         // 2. Explain words list
         if (!db_!!.IsShowedTooltip(component_name, "this_is_words_list")) {
             val listView = findViewById<View>(R.id.wordsListView) as ListView
 
-            tourGuide_!!.apply {
-                toolTip {
-                    title { "Words list header" }
-                    description { "Words list explained" }
-                    gravity { Gravity.BOTTOM or Gravity.CENTER }
-                }
-            }.playOn(listView)
+            tourGuide_!!.toolTip!!.setTitle("Words list header");
+            tourGuide_!!.toolTip!!.setDescription("Words list explained")
+            tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             currentActiveTooltip_ = "this_is_words_list"
+            tourGuide_!!.playOn(listView)
+            return
         }
     }
 
@@ -268,22 +267,7 @@ class SentenceActivity : AppCompatActivity() {
     private fun SetNextButtonHandlers() {
         val nextSentenceButton = findViewById<View>(R.id.nextButton) as Button
 
-//        val tourGuide: TourGuide = TourGuide.create(this) {
-//            pointer {}
-//
-//            toolTip {
-//                title { "Welcome!" }
-//                description { "Click on Get Started to begin..." }
-//            }
-//
-//            overlay {
-//                backgroundColor { Color.parseColor("#66FF0000") }
-//            }
-//        }.playOn(nextSentenceButton)
-
         nextSentenceButton.setOnClickListener {
-//            tourGuide.cleanUp();
-
             var sentence: Sentence? = null
 
             if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {

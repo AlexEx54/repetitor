@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Repetitor</string>
     <string name="yandex_terms">Реализовано с помощью сервиса <a href="https://tech.yandex.ru/dictionary/"> «API «Яндекс.Словарь»</a></string>
+    <string name="db_version">4.0.0</string>
 </resources>
