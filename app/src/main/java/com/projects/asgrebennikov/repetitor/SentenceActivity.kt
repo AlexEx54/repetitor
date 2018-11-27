@@ -1,7 +1,6 @@
 package com.projects.asgrebennikov.repetitor
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.Guideline
@@ -10,17 +9,17 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.BounceInterpolator
+import android.view.animation.TranslateAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 
-import java.io.Console
-import java.io.InputStream
 import java.util.ArrayList
 import java.util.Timer
-import java.util.TimerTask
 import java.util.Vector
 
 import backend.Database
@@ -114,13 +113,13 @@ class SentenceActivity : AppCompatActivity() {
             }
 
             toolTip {
-                title { "Привет!" }
-                description { "Немного объясним как здесь что :) Это предложение) Как бы ты сказал его на английком? Жми на этот текст " }
                 gravity { Gravity.TOP }
             }
 
             overlay {
                 backgroundColor { Color.parseColor("#99000000") }
+                disableClick { true }
+                disableClickThroughHole { true }
             }
         };
 
@@ -138,6 +137,19 @@ class SentenceActivity : AppCompatActivity() {
     private fun ProceedTooltip() {
         val component_name = "sentence_activity"
 
+        val fromBottomAnimation = TranslateAnimation(0f, 0f, 200f, 0f)
+                .apply {
+                    duration = 1000
+                    fillAfter = false
+                    interpolator = BounceInterpolator()
+                }
+
+        val alphaAnimation = AlphaAnimation(0f, 1f)
+                .apply {
+                    duration = 600
+                    fillAfter = false
+                }
+
         if (!currentActiveTooltip_.isNullOrEmpty()) {
             db_!!.SetTooltipAsShowed(component_name, currentActiveTooltip_);
         }
@@ -149,6 +161,7 @@ class SentenceActivity : AppCompatActivity() {
             tourGuide_!!.toolTip!!.setTitle("Hello");
             tourGuide_!!.toolTip!!.setDescription("Explains sentence text view")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
+            tourGuide_!!.toolTip!!.setEnterAnimation(fromBottomAnimation)
             currentActiveTooltip_ = "this_is_sentence"
             tourGuide_!!.playOn(textView)
             return
@@ -161,8 +174,33 @@ class SentenceActivity : AppCompatActivity() {
             tourGuide_!!.toolTip!!.setTitle("Words list header");
             tourGuide_!!.toolTip!!.setDescription("Words list explained")
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
+            tourGuide_!!.toolTip!!.setEnterAnimation(alphaAnimation)
             currentActiveTooltip_ = "this_is_words_list"
             tourGuide_!!.playOn(listView)
+            return
+        }
+
+        // 3. Explain next button
+        if (!db_!!.IsShowedTooltip(component_name, "this_is_next_button")) {
+            val button = findViewById<View>(R.id.nextButton)
+
+            tourGuide_!!.toolTip!!.setTitle("Next button list header");
+            tourGuide_!!.toolTip!!.setDescription("Next button explained")
+            tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.LEFT);
+            currentActiveTooltip_ = "this_is_next_button"
+            tourGuide_!!.playOn(button)
+            return
+        }
+
+        // 4. Explain sentence rewind backward or forward
+        if (!db_!!.IsShowedTooltip(component_name, "rewind_sentence_explained")) {
+            val textView = findViewById<View>(R.id.sentenceTextView) as TextView
+
+            tourGuide_!!.toolTip!!.setTitle("Rewind explanation header");
+            tourGuide_!!.toolTip!!.setDescription("Rewind explained")
+            tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
+            currentActiveTooltip_ = "rewind_sentence_explained"
+            tourGuide_!!.playOn(textView)
             return
         }
     }
