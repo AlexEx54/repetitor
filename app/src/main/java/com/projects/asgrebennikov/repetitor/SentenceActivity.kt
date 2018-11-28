@@ -159,7 +159,8 @@ class SentenceActivity : AppCompatActivity() {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
             tourGuide_!!.toolTip!!.setTitle("Hello");
-            tourGuide_!!.toolTip!!.setDescription("Explains sentence text view")
+            tourGuide_!!.toolTip!!.setTitle("Привет! \n Это предложение, которое тебе нужно перевести на английский");
+            tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
             tourGuide_!!.toolTip!!.setEnterAnimation(fromBottomAnimation)
             currentActiveTooltip_ = "this_is_sentence"
@@ -172,7 +173,8 @@ class SentenceActivity : AppCompatActivity() {
             val listView = findViewById<View>(R.id.wordsListView) as ListView
 
             tourGuide_!!.toolTip!!.setTitle("Words list header");
-            tourGuide_!!.toolTip!!.setDescription("Words list explained")
+            tourGuide_!!.toolTip!!.setTitle("Если забыл как переводится какое-либо слово - пользуйся списком! Слова, на которые нажал, заносятся в список для повторения :)");
+            tourGuide_!!.toolTip!!.setDescription("")
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             tourGuide_!!.toolTip!!.setEnterAnimation(alphaAnimation)
             currentActiveTooltip_ = "this_is_words_list"
@@ -184,8 +186,7 @@ class SentenceActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_next_button")) {
             val button = findViewById<View>(R.id.nextButton)
 
-            tourGuide_!!.toolTip!!.setTitle("Next button list header");
-            tourGuide_!!.toolTip!!.setDescription("Next button explained")
+            tourGuide_!!.toolTip!!.setTitle("Чтобы сравнить свой перевод с оригинальным - жми на эту кнопку");
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.LEFT);
             currentActiveTooltip_ = "this_is_next_button"
             tourGuide_!!.playOn(button)
@@ -196,10 +197,20 @@ class SentenceActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "rewind_sentence_explained")) {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
-            tourGuide_!!.toolTip!!.setTitle("Rewind explanation header");
-            tourGuide_!!.toolTip!!.setDescription("Rewind explained")
+            tourGuide_!!.toolTip!!.setTitle("Если что то пошло не так, и тексты не совпадают, можно смахнуть вправо или влево и \"перемотать\" предложение" );
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
             currentActiveTooltip_ = "rewind_sentence_explained"
+            tourGuide_!!.playOn(textView)
+            return
+        }
+
+        // 5. Explain sentence field scale up and down
+        if (!db_!!.IsShowedTooltip(component_name, "scale_sentence_explained")) {
+            val textView = findViewById<View>(R.id.sentenceTextView) as TextView
+
+            tourGuide_!!.toolTip!!.setTitle("Можно смахнуть вверх или вниз, чтобы увеличить или уменьшить текст предложения. Удачи!" );
+            tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
+            currentActiveTooltip_ = "scale_sentence_explained"
             tourGuide_!!.playOn(textView)
             return
         }
