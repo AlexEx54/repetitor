@@ -105,8 +105,6 @@ class SentenceActivity : AppCompatActivity() {
 
 
     private fun SetupTooltipAndHandlers() {
-        val lv = findViewById<View>(R.id.wordsListView) as ListView
-
         tourGuide_ = TourGuide.create(this) {
             pointer {
                 color { Color.parseColor("#FFFF0000") }
@@ -158,7 +156,6 @@ class SentenceActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_sentence")) {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
-            tourGuide_!!.toolTip!!.setTitle("Hello");
             tourGuide_!!.toolTip!!.setTitle("Привет! \n Это предложение, которое тебе нужно перевести на английский");
             tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
