@@ -81,7 +81,7 @@ class LearningWordsActivity : AppCompatActivity() {
             }
 
             overlay {
-                backgroundColor { Color.parseColor("#99000000") }
+                backgroundColor { Color.parseColor("#99500000") }
                 disableClick { true }
                 disableClickThroughHole { true }
             }
@@ -119,7 +119,8 @@ class LearningWordsActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_word_to_learn")) {
             val view = findViewById<View>(R.id.lw_learningWordList) as View
 
-            tourGuide_!!.toolTip!!.setTitle("Word to learn explained");
+            tourGuide_!!.toolTip!!.setTitle("Попытайся вспомнить как переводится слово. " +
+                                            "Если не получается, на него можно нажать и получить перевод");
             tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             tourGuide_!!.toolTip!!.setEnterAnimation(alphaAnimation)
@@ -132,7 +133,7 @@ class LearningWordsActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_containing_sentence")) {
             val view = findViewById<View>(R.id.containingSentenceTextView) as View
 
-            tourGuide_!!.toolTip!!.setTitle("Containing sentence explained");
+            tourGuide_!!.toolTip!!.setTitle("Это предложение, в котором употреблялось данное слово");
             tourGuide_!!.toolTip!!.setDescription("")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
             currentActiveTooltip_ = "this_is_containing_sentence"
@@ -144,7 +145,8 @@ class LearningWordsActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_complementary_sentence")) {
             val view = findViewById<View>(R.id.complementarySentenceTextView) as View
 
-            tourGuide_!!.toolTip!!.setTitle("Complementary sentence explained");
+            tourGuide_!!.toolTip!!.setTitle("Нажмешь сюда, и получишь перевод исходного предложения. " +
+                                            "Можно смахнуть вправо или влево, если перевод некорректный");
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             currentActiveTooltip_ = "this_is_complementary_sentence"
             tourGuide_!!.playOn(view)
@@ -155,7 +157,8 @@ class LearningWordsActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_completed_button")) {
             val view = findViewById<View>(R.id.completedWordButton) as View
 
-            tourGuide_!!.toolTip!!.setTitle("Completed button explained");
+            tourGuide_!!.toolTip!!.setTitle("Если сам смог вспомнить перевод слова, нажми на эту кнопку - слово исчезнет " +
+                                            "из списка для повторения");
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.RIGHT);
             currentActiveTooltip_ = "this_is_completed_button"
             tourGuide_!!.playOn(view)
@@ -166,7 +169,7 @@ class LearningWordsActivity : AppCompatActivity() {
         if (!db_!!.IsShowedTooltip(component_name, "this_is_next_button")) {
             val view = findViewById<View>(R.id.nextWordButton) as View
 
-            tourGuide_!!.toolTip!!.setTitle("Next button explained");
+            tourGuide_!!.toolTip!!.setTitle("Если не смог - пусть остается, жми на эту кнопку, чтобы показать следующее слово для повторения");
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.LEFT);
             currentActiveTooltip_ = "this_is_next_button"
             tourGuide_!!.playOn(view)
