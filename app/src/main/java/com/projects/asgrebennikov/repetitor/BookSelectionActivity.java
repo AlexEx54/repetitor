@@ -34,5 +34,27 @@ public class BookSelectionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button scarletButton = (Button) findViewById(R.id.scarletButton);
+        scarletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public synchronized void onClick(View v) {
+                Intent intent = new Intent(BookSelectionActivity.this, SentenceActivity.class);
+                intent.putExtra("eng_text_name","study_in_scarlet_eng");
+                intent.putExtra("rus_text_name","study_in_scarlet_rus");
+                startActivity(intent);
+            }
+        });
+
+        Button firTreeButton = (Button) findViewById(R.id.firTreeButton);
+        firTreeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public synchronized void onClick(View v) {
+                Intent intent = new Intent(BookSelectionActivity.this, SentenceActivity.class);
+                intent.putExtra("eng_text_name","fir_tree_eng");
+                intent.putExtra("rus_text_name","fir_tree_rus");
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -16,21 +16,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.3" />
 
     <android.support.constraint.Guideline
         android:id="@+id/main_v_guideline_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.10" />
 
     <android.support.constraint.Guideline
         android:id="@+id/main_v_guideline_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.9" />
 
     <Button
         android:id="@+id/killButton"
@@ -52,11 +52,39 @@
         android:layout_width="0dp"
         android:layout_marginBottom="8dp"
         android:elevation="0dp"
-        android:text="Crime and punishment"
+        android:text="Преступление и наказание [сложный]"
         android:textStyle="bold"
         android:background="@color/color_black"
         android:textColor="@color/color_white"
         app:layout_constraintTop_toBottomOf="@+id/main_h_center_guideline"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+
+    <Button
+        android:id="@+id/scarletButton"
+        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="0dp"
+        android:text="Этюд в багровых тонах [средний]"
+        android:textStyle="bold"
+        android:background="@color/color_black"
+        android:textColor="@color/color_white"
+        app:layout_constraintTop_toBottomOf="@+id/crimeButton"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+
+    <Button
+        android:id="@+id/firTreeButton"
+        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="0dp"
+        android:text="Ель (сказка) [легкий]"
+        android:textStyle="bold"
+        android:background="@color/color_black"
+        android:textColor="@color/color_white"
+        app:layout_constraintTop_toBottomOf="@+id/scarletButton"
         app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
         app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
 
