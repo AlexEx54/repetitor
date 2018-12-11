@@ -113,6 +113,11 @@ class LearningWordsActivity : AppCompatActivity() {
 
         if (!currentActiveTooltip_.isNullOrEmpty()) {
             db_!!.SetTooltipAsShowed(component_name, currentActiveTooltip_);
+
+            if ( currentActiveTooltip_ == "this_is_next_button") {
+                SetComplementarySentenceClickHandler()
+                SetContainingSentenceClickHandler()
+            }
         }
 
         // 1. Explain word

@@ -150,6 +150,10 @@ class SentenceActivity : AppCompatActivity() {
 
         if (!currentActiveTooltip_.isNullOrEmpty()) {
             db_!!.SetTooltipAsShowed(component_name, currentActiveTooltip_);
+
+            if (currentActiveTooltip_ == "scale_sentence_explained") {
+                SetTextViewHandlers()
+            }
         }
 
         // 1. Explain sentence
