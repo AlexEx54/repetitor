@@ -31,6 +31,9 @@ import backend.Vocabulary
 import backend.Word
 import backend.WordContext
 import backend.YandexVocabularyImpl
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -50,6 +53,7 @@ class SentenceActivity : AppCompatActivity() {
     private var db_: Database? = null
     private var tourGuide_: TourGuide? = null
     private var currentActiveTooltip_: String? = null
+    private lateinit var interstitialAd_: InterstitialAd
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,6 +102,15 @@ class SentenceActivity : AppCompatActivity() {
             wordsList_!!.addAll(ToWordListItems(words, Vocabulary.TranslateDirection.RU_EN))
         } catch (e: Exception) {
             finish()
+        }
+
+        interstitialAd_ = InterstitialAd(this)
+        interstitialAd_.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        interstitialAd_.loadAd(AdRequest.Builder().build())
+        interstitialAd_.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                interstitialAd_.loadAd(AdRequest.Builder().build())
+            }
         }
 
         SetupTooltipAndHandlers();
@@ -279,6 +292,9 @@ class SentenceActivity : AppCompatActivity() {
                             item.isFolded = !item.isFolded
                             adapter.notifyDataSetChanged()
                             SaveWordToDb(item.word, item.translateDirection)
+                            if (interstitialAd_.isLoaded) {
+                                interstitialAd_.show()
+                            }
 
                         },
                                 { e ->

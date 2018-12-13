@@ -30,6 +30,9 @@
             android:name=".BookSelectionActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" >
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2381885173378825~5894393156"/>
     </application>
 
 </manifest>
