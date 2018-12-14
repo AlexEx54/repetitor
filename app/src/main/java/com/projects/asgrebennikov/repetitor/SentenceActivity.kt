@@ -344,6 +344,13 @@ class SentenceActivity : AppCompatActivity() {
             } else {
                 engSentence_ = engTextSupplier_!!.GetNextSentence()
                 rusSentence_ = rusTextSupplier_!!.GetNextSentence()
+
+                if (rusSentence_!!.AsString().equals("tttooltip-rewind."))
+                {
+                    rusSentence_ = rusTextSupplier_!!.GetNextSentence()
+                    ShowRewindTooltip()
+                }
+
                 currentDirection_ = Vocabulary.TranslateDirection.RU_EN
                 sentence = rusSentence_
             }
@@ -361,6 +368,15 @@ class SentenceActivity : AppCompatActivity() {
             wordsList_!!.addAll(ToWordListItems(words, currentDirection_))
             adapter.notifyDataSetChanged()
         }
+    }
+
+    private fun ShowRewindTooltip() {
+            val textView = findViewById<View>(R.id.sentenceTextView) as TextView
+
+            tourGuide_!!.toolTip!!.setTitle("Rewind explained");
+            tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
+            tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
+            tourGuide_!!.playOn(textView)
     }
 
 
