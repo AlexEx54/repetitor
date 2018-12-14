@@ -54,6 +54,7 @@ class SentenceActivity : AppCompatActivity() {
     private var tourGuide_: TourGuide? = null
     private var currentActiveTooltip_: String? = null
     private lateinit var interstitialAd_: InterstitialAd
+    private var wordListClickCount_: Int? = 0
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -292,7 +293,8 @@ class SentenceActivity : AppCompatActivity() {
                             item.isFolded = !item.isFolded
                             adapter.notifyDataSetChanged()
                             SaveWordToDb(item.word, item.translateDirection)
-                            if (interstitialAd_.isLoaded) {
+                            wordListClickCount_ = wordListClickCount_!!.inc()
+                            if ( (wordListClickCount_!!.rem(7) == 0) && interstitialAd_.isLoaded) {
                                 interstitialAd_.show()
                             }
 
