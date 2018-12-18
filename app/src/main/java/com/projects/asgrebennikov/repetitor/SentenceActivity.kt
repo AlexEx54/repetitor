@@ -188,7 +188,7 @@ class SentenceActivity : AppCompatActivity() {
             val listView = findViewById<View>(R.id.wordsListView) as ListView
 
             tourGuide_!!.toolTip!!.setTitle("Words list header");
-            tourGuide_!!.toolTip!!.setTitle("Если забыл как переводится какое-либо слово - пользуйся списком! Слова, на которые нажал, заносятся в список для повторения :)");
+            tourGuide_!!.toolTip!!.setTitle("Если забыл как переводится какое-либо слово - пользуйся списком! Слова, на которые нажал, заносятся в список для повторения");
             tourGuide_!!.toolTip!!.setDescription("")
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             tourGuide_!!.toolTip!!.setEnterAnimation(alphaAnimation)
@@ -340,16 +340,17 @@ class SentenceActivity : AppCompatActivity() {
 
             if (currentDirection_ == Vocabulary.TranslateDirection.RU_EN) {
                 currentDirection_ = Vocabulary.TranslateDirection.EN_RU
+
+                if (engSentence_!!.AsString().equals("tttooltip-rewind."))
+                {
+                    engSentence_ = engTextSupplier_!!.GetNextSentence()
+                    ShowRewindTooltip()
+                }
+
                 sentence = engSentence_
             } else {
                 engSentence_ = engTextSupplier_!!.GetNextSentence()
                 rusSentence_ = rusTextSupplier_!!.GetNextSentence()
-
-                if (rusSentence_!!.AsString().equals("tttooltip-rewind."))
-                {
-                    rusSentence_ = rusTextSupplier_!!.GetNextSentence()
-                    ShowRewindTooltip()
-                }
 
                 currentDirection_ = Vocabulary.TranslateDirection.RU_EN
                 sentence = rusSentence_
@@ -373,7 +374,7 @@ class SentenceActivity : AppCompatActivity() {
     private fun ShowRewindTooltip() {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
-            tourGuide_!!.toolTip!!.setTitle("Rewind explained");
+            tourGuide_!!.toolTip!!.setTitle("Напоминание! Можно смахнуть вправо или влево, если приложение на английском не соответсвует русскому.");
             tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
             tourGuide_!!.playOn(textView)
