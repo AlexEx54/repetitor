@@ -188,7 +188,7 @@ class SentenceActivity : AppCompatActivity() {
             val listView = findViewById<View>(R.id.wordsListView) as ListView
 
             tourGuide_!!.toolTip!!.setTitle("Words list header");
-            tourGuide_!!.toolTip!!.setTitle("Если забыл как переводится какое-либо слово - пользуйся списком! Слова, на которые нажал, заносятся в список для повторения");
+            tourGuide_!!.toolTip!!.setTitle("Если забыл как переводится какое-либо слово - пользуйся списком! Слова, на которые нажал, заносятся в список для повторения \uD83D\uDE09");
             tourGuide_!!.toolTip!!.setDescription("")
             tourGuide_!!.toolTip!!.setGravity(Gravity.TOP or Gravity.CENTER);
             tourGuide_!!.toolTip!!.setEnterAnimation(alphaAnimation)
@@ -372,12 +372,21 @@ class SentenceActivity : AppCompatActivity() {
     }
 
     private fun ShowRewindTooltip() {
+        val fromBottomAnimation = TranslateAnimation(0f, 0f, 200f, 0f)
+                .apply {
+                    duration = 1000
+                    fillAfter = false
+                    interpolator = BounceInterpolator()
+                }
+
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
 
-            tourGuide_!!.toolTip!!.setTitle("Напоминание! Можно смахнуть вправо или влево, если приложение на английском не соответсвует русскому.");
+            tourGuide_!!.toolTip!!.setTitle("Напоминание! \n Можно смахнуть вправо или влево, если приложение на английском не соответсвует русскому.");
             tourGuide_!!.toolTip!!.setDescription("[ЖМИ СЮДА]")
             tourGuide_!!.toolTip!!.setGravity(Gravity.BOTTOM or Gravity.CENTER);
+            tourGuide_!!.toolTip!!.setEnterAnimation(fromBottomAnimation)
             tourGuide_!!.playOn(textView)
+            SetTextViewHandlers()
     }
 
 

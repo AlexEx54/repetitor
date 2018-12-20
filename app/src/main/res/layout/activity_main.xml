@@ -41,7 +41,7 @@
         android:background="@color/color_black"
         android:textColor="@color/color_white"
         android:textStyle="bold"
-        android:text="Practice"
+        android:text="Практика"
         app:layout_constraintBottom_toTopOf="@+id/main_h_center_guideline"
         app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
         app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
@@ -52,7 +52,7 @@
         android:layout_width="0dp"
         android:layout_marginBottom="8dp"
         android:elevation="0dp"
-        android:text="Learning"
+        android:text="Повторение"
         android:textStyle="bold"
         android:background="@color/color_black"
         android:textColor="@color/color_white"

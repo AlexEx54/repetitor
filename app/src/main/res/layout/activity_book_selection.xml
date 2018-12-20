@@ -34,17 +34,18 @@
 
     <Button
         android:id="@+id/killButton"
-        android:layout_height="100dp"
         android:layout_width="0dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="8dp"
-        android:elevation="0dp"
         android:background="@color/color_black"
+        android:elevation="0dp"
+        android:text="Kill the mockingbird"
         android:textColor="@color/color_white"
         android:textStyle="bold"
-        android:text="Kill the mockingbird"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/main_h_center_guideline"
-        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
-        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1" />
 
     <Button
         android:id="@+id/firTreeButton"

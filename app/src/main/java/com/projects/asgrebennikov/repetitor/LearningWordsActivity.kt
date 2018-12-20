@@ -238,7 +238,7 @@ class LearningWordsActivity : AppCompatActivity() {
         val containigTextView = findViewById<View>(R.id.containingSentenceTextView) as TextView
         val complementaryTextView = findViewById<View>(R.id.complementarySentenceTextView) as TextView
 
-        containigTextView.setText("Нет слов для повторения :)")
+        containigTextView.setText("Нет слов для \n повторения \n ☺")
         complementaryTextView.setText("- - -")
         learningWord_!!.clear()
         listAdapter_!!.notifyDataSetChanged()
