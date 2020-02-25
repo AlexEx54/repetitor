@@ -1,7 +1,7 @@
 package com.projects.asgrebennikov.repetitor
 
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
@@ -119,7 +119,7 @@ class LearningWordsActivity : AppCompatActivity() {
                 SetContainingSentenceClickHandler()
             }
         }
-
+/*
         // 1. Explain word
         if (!db_!!.IsShowedTooltip(component_name, "this_is_word_to_learn")) {
             val view = findViewById<View>(R.id.lw_learningWordList) as View
@@ -180,6 +180,7 @@ class LearningWordsActivity : AppCompatActivity() {
             tourGuide_!!.playOn(view)
             return
         }
+ */
     }
 
 
