@@ -12,8 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".GetFeedbackActivity"
+            android:label="@string/title_activity_get_feedback"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".SentenceActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".LearningWordsActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
@@ -28,11 +32,11 @@
         </activity>
         <activity
             android:name=".BookSelectionActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" >
-        </activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2381885173378825~5894393156"/>
+            android:value="ca-app-pub-2381885173378825~5894393156" />
     </application>
 
 </manifest>
