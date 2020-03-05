@@ -1,24 +1,23 @@
 package com.projects.asgrebennikov.repetitor
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-
-import kotlinx.android.synthetic.main.activity_get_feedback.*
-
-import java.util.Properties
+import io.reactivex.Flowable
+import java.util.*
 import javax.mail.Authenticator
+import javax.mail.Message.RecipientType
 import javax.mail.PasswordAuthentication
 import javax.mail.Session
-import javax.mail.internet.MimeMessage
 import javax.mail.internet.InternetAddress
-import javax.mail.Message.RecipientType
-import javax.mail.Transport
+import javax.mail.internet.MimeMessage
 
 fun sendEmail(user: String, tos: Array<String>, ccs: Array<String>, title: String,
               body: String, password: String) {
     val props = Properties()
-    val host = "smtp.gmail.com"
+    val host = "smtp.mail.ru"
     with (props) {
         put("mail.smtp.host", host)
         put("mail.smtp.port", "587") // for TLS
@@ -31,13 +30,11 @@ fun sendEmail(user: String, tos: Array<String>, ccs: Array<String>, title: Strin
     }
     val session = Session.getInstance(props, auth)
     val message = MimeMessage(session)
-    with (message) {
-        setFrom(InternetAddress(user))
-        for (to in tos) addRecipient(RecipientType.TO, InternetAddress(to))
-        for (cc in ccs) addRecipient(RecipientType.TO, InternetAddress(cc))
-        setSubject(title)
-        setText(body)
-    }
+    message.setFrom(InternetAddress(user))
+    for (to in tos) message.addRecipient(RecipientType.TO, InternetAddress(to))
+    for (cc in ccs) message.addRecipient(RecipientType.TO, InternetAddress(cc))
+    message.setSubject(title)
+    message.setText(body)
     val transport = session.getTransport("smtp")
     with (transport) {
         connect(host, user, password)
@@ -51,20 +48,18 @@ class GetFeedbackActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_feedback)
-        setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        val sendFeedbackButton = findViewById<View>(R.id.sendFeedbackButton) as Button
+        sendFeedbackButton.setOnClickListener {
+            Flowable.fromCallable( {
+                val user = "alexex@list.ru"
+                val tos = arrayOf<String>("alexex111@yandex.ru")
+                val ccs = arrayOf<String>()
+                val title = "Ebat"
+                val body = "This is just a test email ebat"
+                val password = "1836593brv1"
+                sendEmail(user, tos, ccs, title, body, password)
+            })
         }
-
-        val user = "some.user@gmail.com"
-        val tos = arrayOf("other.user@otherserver.com")
-        val ccs = arrayOf<String>()
-        val title = "Rosetta Code Example"
-        val body = "This is just a test email"
-        val password = "secret"
-        sendEmail(user, tos, ccs, title, body, password)
     }
-
 }
