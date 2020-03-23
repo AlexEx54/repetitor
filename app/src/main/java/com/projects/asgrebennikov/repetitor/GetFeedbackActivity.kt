@@ -1,11 +1,11 @@
 package com.projects.asgrebennikov.repetitor
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.Flowable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.mail.Authenticator
 import javax.mail.Message.RecipientType
@@ -51,13 +51,13 @@ class GetFeedbackActivity : AppCompatActivity() {
 
         val sendFeedbackButton = findViewById<View>(R.id.sendFeedbackButton) as Button
         sendFeedbackButton.setOnClickListener {
-            Flowable.fromCallable( {
-                val user = "alexex@list.ru"
+            Flowable.fromCallable({}).subscribeOn(Schedulers.io()).subscribe({
+                val user = "repetitor.feedback@list.ru"
                 val tos = arrayOf<String>("alexex111@yandex.ru")
                 val ccs = arrayOf<String>()
                 val title = "Ebat"
-                val body = "This is just a test email ebat"
-                val password = "1836593brv1"
+                val body = "This is just a test email ebat v rot"
+                val password = "fucking.strong.password.blyat"
                 sendEmail(user, tos, ccs, title, body, password)
             })
         }

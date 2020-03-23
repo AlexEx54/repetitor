@@ -73,7 +73,7 @@
         android:layout_width="0dp"
         android:layout_marginBottom="8dp"
         android:elevation="0dp"
-        android:text="Написать нам (будем рады! :)"
+        android:text="Написать нам :)"
         android:textStyle="bold"
         android:background="@color/color_black"
         android:textColor="@color/color_belize_hole"

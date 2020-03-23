@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="repetitor/app" />
+      <module fileurl="file://$PROJECT_DIR$/dev-repetitor.iml" filepath="$PROJECT_DIR$/dev-repetitor.iml" group="repetitor" />
       <module fileurl="file://$PROJECT_DIR$/repetitor.iml" filepath="$PROJECT_DIR$/repetitor.iml" group="repetitor" />
+      <module fileurl="file://$PROJECT_DIR$/app/repetitor-app.iml" filepath="$PROJECT_DIR$/app/repetitor-app.iml" group="repetitor/app" />
     </modules>
   </component>
 </project>
