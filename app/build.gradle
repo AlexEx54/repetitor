@@ -4,6 +4,14 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/alexex/Downloads/repetitor.jks')
+            storePassword '1836593Brv'
+            keyAlias = 'repetitor_key'
+            keyPassword '1836593Brv'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.projects.asgrebennikov.repetitor"
@@ -18,6 +26,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

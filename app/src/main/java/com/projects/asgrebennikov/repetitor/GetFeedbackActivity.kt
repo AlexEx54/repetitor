@@ -3,7 +3,9 @@ package com.projects.asgrebennikov.repetitor
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -50,14 +52,17 @@ class GetFeedbackActivity : AppCompatActivity() {
         setContentView(R.layout.activity_get_feedback)
 
         val sendFeedbackButton = findViewById<View>(R.id.sendFeedbackButton) as Button
+        val feedbackTextEdit = findViewById<View>(R.id.feedback_text) as EditText
+
         sendFeedbackButton.setOnClickListener {
             Flowable.fromCallable({}).subscribeOn(Schedulers.io()).subscribe({
                 val user = "repetitor.feedback@list.ru"
                 val tos = arrayOf<String>("alexex111@yandex.ru")
                 val ccs = arrayOf<String>()
-                val title = "Ebat"
-                val body = "This is just a test email ebat v rot"
+                val title = "repetitor feedback"
+                val body = feedbackTextEdit.text.toString()
                 val password = "fucking.strong.password.blyat"
+                finish()
                 sendEmail(user, tos, ccs, title, body, password)
             })
         }
