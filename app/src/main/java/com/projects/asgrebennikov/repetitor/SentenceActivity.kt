@@ -2,9 +2,9 @@ package com.projects.asgrebennikov.repetitor
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.Guideline
-import android.support.v7.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
@@ -86,9 +86,6 @@ class SentenceActivity : AppCompatActivity() {
             rusTextSupplier_ = TextSupplierImpl(filesDir.absolutePath, rus_stream, russianText, db_)
             engTextSupplier_ = TextSupplierImpl(filesDir.absolutePath, eng_stream, englishText, db_)
 
-            //            rusTextSupplier_.SaveCursor();
-            //            engTextSupplier_.SaveCursor();
-
             rusTextSupplier_!!.LoadCursor()
             engTextSupplier_!!.LoadCursor()
 
@@ -107,7 +104,7 @@ class SentenceActivity : AppCompatActivity() {
 
         interstitialAd_ = InterstitialAd(this)
         interstitialAd_.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        interstitialAd_.loadAd(AdRequest.Builder().build())
+//        interstitialAd_.loadAd(AdRequest.Builder().build())
         interstitialAd_.adListener = object : AdListener() {
             override fun onAdClosed() {
                 interstitialAd_.loadAd(AdRequest.Builder().build())
@@ -169,7 +166,7 @@ class SentenceActivity : AppCompatActivity() {
                 SetTextViewHandlers()
             }
         }
-
+/*
         // 1. Explain sentence
         if (!db_!!.IsShowedTooltip(component_name, "this_is_sentence")) {
             val textView = findViewById<View>(R.id.sentenceTextView) as TextView
@@ -229,6 +226,8 @@ class SentenceActivity : AppCompatActivity() {
             tourGuide_!!.playOn(textView)
             return
         }
+
+ */
     }
 
 
@@ -295,7 +294,7 @@ class SentenceActivity : AppCompatActivity() {
                             SaveWordToDb(item.word, item.translateDirection)
                             wordListClickCount_ = wordListClickCount_!!.inc()
                             if ( (wordListClickCount_!!.rem(7) == 0) && interstitialAd_.isLoaded) {
-                                interstitialAd_.show()
+                                //interstitialAd_.show()
                             }
 
                         },

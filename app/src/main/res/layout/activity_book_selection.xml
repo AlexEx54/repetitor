@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,21 +11,21 @@
     tools:layout_editor_absoluteY="0dp">
 
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/main_h_center_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.4" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/main_v_guideline_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.10" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/main_v_guideline_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,20 +48,6 @@
         app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1" />
 
     <Button
-        android:id="@+id/firTreeButton"
-        android:layout_height="100dp"
-        android:layout_width="0dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="0dp"
-        android:text="Ель (сказка) [легкий]"
-        android:textStyle="bold"
-        android:background="@color/color_black"
-        android:textColor="@color/color_greenesh"
-        app:layout_constraintTop_toBottomOf="@+id/killButton"
-        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
-        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
-
-    <Button
         android:id="@+id/scarletButton"
         android:layout_height="100dp"
         android:layout_width="0dp"
@@ -70,8 +56,23 @@
         android:text="Этюд в багровых тонах [средний]"
         android:textStyle="bold"
         android:background="@color/color_black"
+        android:textColor="@color/color_greenesh"
+        app:layout_constraintTop_toBottomOf="@+id/killButton"
+        app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
+        app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
+
+    <Button
+        android:id="@+id/firTreeButton"
+        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="40dp"
+        android:elevation="0dp"
+        android:text="Ель (сказка) [непонятный]"
+        android:textStyle="bold"
+        android:background="@color/color_black"
         android:textColor="@color/color_wp_teal"
-        app:layout_constraintTop_toBottomOf="@+id/firTreeButton"
+        app:layout_constraintTop_toBottomOf="@+id/scarletButton"
         app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
         app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
 
@@ -85,7 +86,7 @@
         android:textStyle="bold"
         android:background="@color/color_black"
         android:textColor="@color/colorAccent"
-        app:layout_constraintTop_toBottomOf="@+id/scarletButton"
+        app:layout_constraintTop_toBottomOf="@+id/firTreeButton"
         app:layout_constraintStart_toStartOf="@+id/main_v_guideline_1"
         app:layout_constraintEnd_toEndOf="@+id/main_v_guideline_2" />
 
@@ -93,4 +94,4 @@
 
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

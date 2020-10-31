@@ -1,7 +1,7 @@
 package com.projects.asgrebennikov.repetitor;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MobileAds.initialize(this, "ca-app-pub-2381885173378825~5894393156");
+        Button feedbackButton = (Button) findViewById(R.id.writeFeedbackButton);
+        feedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public synchronized void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GetFeedbackActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //MobileAds.initialize(this, "ca-app-pub-2381885173378825~5894393156");
     }
 }

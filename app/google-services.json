@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "19781905340",
+    "firebase_url": "https://repetitor-1524d.firebaseio.com",
+    "project_id": "repetitor-1524d",
+    "storage_bucket": "repetitor-1524d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19781905340:android:dcd51f7bd51c131680d9b9",
+        "android_client_info": {
+          "package_name": "com.projects.asgrebennikov.repetitor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19781905340-8118lnt3n3a9ic9crqscpbah4hsodcvi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRz7-IyKyhn-k8m0SILXZh4hqzc4jmlSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19781905340-8118lnt3n3a9ic9crqscpbah4hsodcvi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

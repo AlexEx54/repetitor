@@ -5,10 +5,9 @@ package com.projects.asgrebennikov.repetitor;
  */
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Vector;
 

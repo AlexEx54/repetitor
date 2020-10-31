@@ -1,6 +1,6 @@
 package backend;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Created by as.grebennikov on 28.03.18.
